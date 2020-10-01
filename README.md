@@ -1,5 +1,5 @@
-# devfest18
-ResQme
+
+# ResQme
 The platform will help to prepare & respond before and after
 Natural Disaster. Connecting the NGOs and Rescue teams
 with collaborative actions by government to save lives as its
