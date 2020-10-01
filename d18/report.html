@@ -1,0 +1,3915 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="js/pace.min.js"></script>
+    <link href="css/pace.css" rel="stylesheet" />
+
+   
+
+    
+    
+
+   
+    <link rel="manifest" href="json/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    
+    <title>ResQme</title>
+    
+
+    
+    <link href="css/rappler.css" rel="stylesheet">
+    <link href="css/jquery.switchButton.css" rel="stylesheet">
+
+
+    
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/style3.css" rel="stylesheet">
+    
+   <link rel="stylesheet" media="screen and (max-width: 1024px)" href="css/style4.css">
+   <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+   
+   <script src="js/autolinker.min.js"></script>
+   <script src="js/faultline/faultline.js"></script>
+   <script src="http://cdn.agora.io/sdk/web/AgoraRTCSDK-2.4-latest.js"></script>
+  
+   <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+   <script src="js/jquery-1.10.2.min.js"></script>
+   <script>
+      
+      var idToken = "";
+      firebase.initializeApp({
+        apiKey: "AIzaSyDgYVf8xEExWwwjGMKSs4dg7BBeRD9a5KY",
+        authDomain: "resqme-b59d5.firebaseapp.com",
+        databaseURL: "https://resqme-b59d5.firebaseio.com",
+        projectId: "resqme-b59d5",
+        storageBucket: "resqme-b59d5.appspot.com",
+        messagingSenderId: "685913446219"
+      });
+      firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+          console.log('user is logged in');
+          console.log(user);
+          $('#sign-in-button').text(user.displayName)
+          $('#login-pop-up').html(`<span style="font-size:12px" class="clickover-txt"><a href="" onclick="signOut()">Logout</a></span>`);
+          $.ajax({
+            url: "https://i.rappler.com/dev/token",
+            method: "GET",
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            },
+            headers: {
+                Authorization: token
+            }
+          })
+          .done(function (data) {
+              // cookie is now set
+          })
+        } else {
+          console.log('user not logged in');
+          
+        }
+        
+      })
+    </script>
+    <script src="js/me4.js"></script>       
+
+    <style>
+      html, body, #map_canvas {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
+      html,body {
+        overflow: hidden;
+      }
+      /** FIX for Bootstrap and Google Maps Info window styes problem **/
+      img[src*="gstatic.com/"], img[src*="googleapis.com/"] {
+        max-width: none;
+      }
+      /** FIX for Bootstrap and Google Maps Info window styes problem **/
+      img[src*="gstatic.com/"], img[src*="googleapis.com/"] {
+        max-width: none;
+      }
+
+      .switch-label:hover, .switch-label a:hover {
+        cursor: default!important;
+      }
+
+      
+
+
+      
+    </style>
+
+    <!-- Add fancyBox main CSS file -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.fancybox.css" media="screen" />
+  </head>
+
+<body>
+  <header class="responsive">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            Menu
+          </button>          
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+
+          <ul id="accordion">
+            <li>
+              <a class="panel-heading" role="button" data-toggle="collapse" data-parent="#accordion" href="#data-collapse" aria-expanded="true" aria-controls="collapseOne">
+                Data
+              </a>
+              <div id="data-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                  <ul class="panel-body" id="datasets-list-2">
+
+                  
+
+                    <li class="cb-container">
+                        <div class="flip-switch">
+                          <input type="checkbox" name="flip-switch-fusion" class="data-fusion" value="data-fusion">
+                        </div>
+                        <span class="switch-label"><a href="#" class="kind">Flood-prone areas, Scale of 1:50,000<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Source: MGB</a></span>
+                    </li>
+                    <li class="cb-container">
+                        <div class="flip-switch">
+                          <input type="checkbox" name="flip-switch-fusion" class="data-fusion2" value="data-fusion2">
+                        </div>
+                        <span class="switch-label"><a href="#" class="kind">Rain-induced Landslide-prone areas, Scale of 1:50,000<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Source: MGB Project Ready</a></span>
+                    </li>
+
+                  
+
+                  
+                  </ul>
+                </div>
+              </div>
+            </li>
+            <li><a href="#" data-toggle="modal" data-target="#modal-about-responive" id="about-link">About</a></li>
+            <li>
+              
+              <a class="panel-heading" role="button" data-toggle="collapse" data-parent="#accordion" href="#login-collapse" aria-expanded="true" aria-controls="collapseOne">
+                Login
+              </a>
+              <div id="login-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                <div class="panel-body">
+                  <p>Login using your social account:</p>
+                  <div id="social-accounts">
+                      <button class="facebook bg block text-left" style="margin-bottom: 8px; margin-top: 8px;" onClick="javascript:fbSignIn()">
+                          <i class="fa fa-facebook-square white" aria-hidden="true" style="padding-right: 4px;"></i> Login with Facebook
+                      </button>
+                      <button class="twitter bg block text-left" style="margin-bottom: 8px;" onClick="javascript:twitterSignIn()">
+                          <i class="fa fa-twitter white" aria-hidden="true" style="padding-right: 4px;"></i> Login with Twitter
+                      </button>
+                      <button class="bg block text-left" style="margin-bottom: 8px; border: 1px solid #eee;" style="background-color: #d34836"
+                          onClick="javascript:googleSignIn()">
+                          <img src="https://assets.rappler.com/44B63D44C5B9471D8162729F56BAB766/img/84C6CF9CA34C4631BD2723B89AF3E45F/google-icon.png"
+                              style="padding-right: 0px; width: 25px; margin-left: -4px;" class="nolazy"> Login with Google
+                      </button>                    
+                  </div>
+                  <label class="clickover-txt caption no-margin" style="line-height: 1.25; margin-top: 8px;">
+                    Already have  Account?
+                    <a href="https://www.resqme.com/#userlogin_modal"><b>Login</b></a>
+                    or <a href="https://www.resqme.com/#userreg_modal"><b>Register</b></a> to create one.
+                  </label>
+                </div>
+              </div>
+              
+            </li>
+          </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+  </header>
+
+  <div class="responsive" id="page-content">
+    <section id="search">
+      <input type="search" placeholder="Search location here..." id="search-location-input-2">
+    </section>
+
+    
+
+    <section id="filter-reports">
+      <div class="pull-right">
+       <!-- class="visible-sm" -->
+        <select id="report-list-options-2" class="report-list-options">
+          <option selected="selected" value="ALL">All Reports</option>
+          <option value="INFO">Info Reports</option>
+          <option value="FLOOD">Flood Reports</option>
+          <option value="RESCUE">Rescue Reports</option>
+          <option value="BRIDGE">Bridge</option>
+          <option value="EARTHQUAKE">Earthquake</option>
+          <option value="EARTHQUAKE-EVACUATION-SITE">Earthquake Evacuation Site</option>
+          <option value="FIRE">Fire</option>
+          <option value="LANDSLIDE">Landslide</option>
+          <option value="RAIN">Rain</option>
+          <option value="RELIEF">Relief</option>
+          <option value="STORM-SURGE">Storm Surge</option>
+          <option value="VOLCANIC-ERUPTION">Volcanic Eruption</option>
+        </select>
+
+        <select id="report-list-verified-options-2" class="report-list-verified-options">
+          <option selected="selected" value="ALL">All</option>
+          <option value="VERIFIED">Verified</option>
+          <option value="UNVERIFIED">Unverified</option>
+        </select>
+
+        <select id="report-list-sort-options-2" class="report-list-sort-options">
+          <!--<option value="HOT_DOWN">Hottest</option>
+          <option value="HOT_UP">Least Hot</option>-->
+          <option selected="selected" value="DATE_DOWN">Newest</option>
+          <option value="DATE_UP">Oldest</option>
+        </select>
+      </div>
+    </section>
+    <div id="scroll-wrap">
+      <section id="reports">
+        <ul id="report-list-2">
+        </ul>
+      </section>
+    </div>
+    <button class="btn-toggle-alert">Hide Alerts</button>
+    
+    <div id="map-canvas-2" style="min-width:320px;"></div>
+
+    
+    <div class="btn-btm">
+      <a href="/report" class="btn-gray btn-lg btn-report">Report</a>
+    </div>
+    
+  </div><!-- #page-content -->
+
+
+
+  <div id="main-container">
+    <!-- HEADER -->
+    <header id="header">
+      <div class="navbar-header">
+            <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button> -->
+           
+      </div>
+
+      <!-- TOP MENU -->
+      <div class="collapse navbar-collapse" id="navbar-collapse">
+        
+        <ul class="menu nav navbar-nav" id="main-nav">
+            <!-- Data -->
+            <li class="dropdown bg-arrow" id="datamenu">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="/img/icon-data.png" alt="">Data</a>
+
+              <div class="sub-menu dropdown-menu">
+                <span class="btm-caret"></span>
+                <ul id="datasets-list">
+
+                
+
+                  <li class="cb-container">
+                      <div class="flip-switch">
+                        <input type="checkbox" name="flip-switch-fusion" class="data-fusion" value="data-fusion">
+                      </div>
+                      <span class="switch-label"><a href="#" class="kind">Flood-prone areas<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Source: MGB</a></span>
+                  </li>
+                  <li class="cb-container">
+                      <div class="flip-switch">
+                        <input type="checkbox" name="flip-switch-fusion" class="data-fusion2" value="data-fusion2">
+                      </div>
+                      <span class="switch-label"><a href="#" class="kind">Rain-induced Landslide-prone areas<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Source: MGB Project Ready</a></span>
+                  </li>
+
+                
+
+                
+
+                </ul>
+              </div>
+            </li><!-- End of Data -->
+
+        </ul>
+        <ul class="menu nav navbar-right" id="nav-right">
+          <li><a href="#" data-toggle="modal" data-target="#modal-about" id="about-link">About</a></li>
+          <li class="login-user">
+              <a href="javascript:void(0)" data-id="popover-div" id="rpl_auth_container" class="popover-btn" data-toggle="popover" data-placement="bottom"><i id="login_user_icon" class="fa fa-user"> <span class="sign-in-text" id="sign-in-button">Sign In</span> </i></a>
+                  <div id="popover-div">
+                    <div style="line-height:1;">
+                        <div id="login-pop-up">
+                            <span style="font-size:12px" class="clickover-txt">Login using your<br> social account:</span>
+
+                            <div id="social-login">
+                               <button class="facebook bg block text-left" style="margin-bottom: 8px; margin-top: 8px;" onClick="javascript:fbSignIn()">
+                                   <i class="fa fa-facebook-square white" aria-hidden="true" style="padding-right: 4px;"></i> Login with Facebook
+                               </button>
+                               <button class="twitter bg block text-left" style="margin-bottom: 8px;" onClick="javascript:twitterSignIn()">
+                                   <i class="fa fa-twitter white" aria-hidden="true" style="padding-right: 4px;"></i> Login with Twitter
+                               </button>
+                               <button class="bg block text-left" style="margin-bottom: 8px; border: 1px solid #eee;" style="background-color: #d34836"
+                                   onClick="javascript:googleSignIn()">
+                                   <img src="https://assets.resqme.com/44B63D44C5B9471D8162729F56BAB766/img/84C6CF9CA34C4631BD2723B89AF3E45F/google-icon.png"
+                                       style="padding-right: 0px; width: 25px; margin-left: -4px;" class="nolazy"> Login with Google
+                               </button>     
+                        </div>
+                        <!--  -->
+                                                    
+                       </div>
+
+                        <!--  -->
+                      </div>
+                </div>
+            </li>
+        </ul>
+      </div><!-- END OF TOP MENU -->
+
+    </header>  <!-- END OF HEADER -->
+
+
+    <!-- CONTENT -->
+    <div id="content">
+
+      <div id="sidebar-report">
+        <div class="sidebar-report-top">
+            <div class="btn-report"><a href="#" id="create-a-report">Report</a></div>
+        </div>
+
+        <div class="sidebar-content">
+          <div class="sort-header">
+            <div class="sort-report-all pull-left">
+              <select id="report-list-options" class="report-list-options">
+                <option selected="selected" value="ALL">All Reports</option>
+                <option value="INFO">Info Reports</option>
+                <option value="FLOOD">Flood Reports</option>
+                <option value="RESCUE">Rescue Reports</option>
+                <option value="BRIDGE">Bridge</option>
+                <option value="EARTHQUAKE">Earthquake</option>
+                <option value="EARTHQUAKE-EVACUATION-SITE">Earthquake Evacuation Site</option>
+                <option value="FIRE">Fire</option>
+                <option value="LANDSLIDE">Landslide</option>
+                <option value="RAIN">Rain</option>
+                <option value="RELIEF">Relief</option>
+                <option value="STORM-SURGE">Storm-Surge</option>
+                <option value="VOLCANIC-ERUPTION">Volcanic-Eruption</option>
+              </select>
+            </div>
+            <div class="sort-report-hot pull-right">
+              <select id="report-list-sort-options" class="report-list-sort-options">
+                <!--<option value="HOT_DOWN">Hottest</option>
+                <option value="HOT_UP">Least Hot</option>-->
+                <option selected="selected" value="DATE_DOWN">Newest</option>
+                <option value="DATE_UP">Oldest</option>
+              </select>
+            </div>
+
+            <div class="sort-report-all pull-right">
+              <select id="report-list-verified-options" class="report-list-verified-options">
+                <option selected="selected" value="ALL">All</option>
+                <option value="VERIFIED">Verified</option>
+                <option value="UNVERIFIED">Unverified</option>
+              </select>
+              &nbsp;
+            </div>
+            
+            <div class="sort-report-hot pull-left" style="margin-top:10px">
+              <select id="report-events-options" style="color:#737372">
+                  <option selected="selected" value="SELECT_EVENTS">Select Event</option>
+              </select>
+            </div>
+          </div>
+
+          <ul id="report-list">
+          </ul>
+        </div>
+
+      </div> <!-- END OF SIDEBAR -->
+
+      <!-- MAP -->
+      <div id="map-wrap">
+        <div id="map-content">
+          <div class="search-location" id="search-form">
+            <input type="search" id='search-location-input' placeholder="Location">
+          </div>
+          <div class="social-media-bar">
+            <ul>
+              
+
+              <li><a href="#" onclick="facebook_share();"><img src="https://cdns3.gigya.com/gs/i/HTMLLogin/facebook_60.png" style="width:30px;height:30px;position:static;margin:0" alt=""></a></li>
+              <li><a href="#" class="twitter" onclick="twitter_share();"><img src="https://cdns3.gigya.com/gs/i/HTMLLogin/twitter_60.png" style="width:30px;height:30px;position:static;margin:0" alt=""></a></li>
+            </ul>
+          </div>
+          
+          <div id="map-canvas"></div>
+          
+        </div>
+      </div><!-- END OF MAP -->
+
+
+      <!-- Login Page -->
+        <div id="userlogin_modal" class="rappler_bmodal modal" tabindex="-1" role="dialog" aria-labelledby="login" aria-hidden="true">
+            <div class="modal-dialog login-modal-dialog">
+                <div class="modal-content login-modal-content">
+                    <div class="modal-header login-modal-header" style="text-align:center">
+                        <button type="button" class="close-modal" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h3 id="userlogin_modal_header" class="modalheader">Log Account</h3>
+                    </div>
+                    <div class="modal-body login-modal">
+                        <form id="frm_login" role="form" action="/login" method="POST">
+                            <div id="frm_login_error" class="alert alert-danger hide" style="text-align:center"></div>
+                            <fieldset>
+                                <div class="row-fluid">
+                                    <div class="form-group login-form-group">
+                                        <label>Email:</label><br />
+                                        <input type="text" id="login_id" class="login_usr_text" name="login_id" value="" placeholder="Enter Email" required="required" autocomplete="off" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Password:</label><br />
+                                        <input type="password" id="login_password" class="login_usr_text" name="login_password" value="" placeholder="Enter Password" required="required" autocomplete="off" />
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <div class="login-modal-footer">
+                                <div class="login-button-container">
+                                    <button id="btn_login_cancel" class="rappler_btn_cancel" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                                    <button id="btn_login_submit" class="rappler_btn_submit" type="submit">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+      <!-- end -->
+
+      <!-- Register Page -->
+      
+
+    </div><!-- END OF CONTENT -->
+  </div> <!-- END OF MAIN CONTAINER -->
+
+
+
+  <!-- Modal About -->
+ <div class="modal fade" id="modal-about" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-body">
+           <div class="row">
+               
+               <div class="col-md-12 col-xs-12">
+                   <p>
+                       <b>ResQme</b> is a collaborative platform that combines top-down government action with bottom up civic engagement to help communities mitigate risks and deal with climate change and natural hazards.
+                       Using mobile and web technologies and social media, it ensures the flow of critical and actionable information to those who need it before, during, and after disasters and connects those who need help directly with those who can truly help.                      
+                   </p>
+
+                   
+
+               </div>
+           </div>
+         <div class="modal-footer">
+         
+         <div class="btn-report"><a href="#" data-dismiss="modal" onclick="create_a_report()">Report</a></div>
+         
+         <div class="btn-close" data-dismiss="modal">Close and Continue</div>
+         </div>
+       </div>
+     </div>
+   </div>
+ </div> <!-- End of Modal About -->
+
+  <!-- Modal Info -->
+  
+
+   <!-- Modal About2 -->
+ <div class="modal fade" id="modal-about-responive" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-body">
+        
+         <p><b>ResQme</b> is a collaborative platform that combines top-down government action with bottom up civic engagement to help communities mitigate risks and deal with climate change and natural hazards. Using mobile and web technologies and social media, it ensures the flow of critical and actionable information to those who need it before, during, and after disasters and connects those who need help directly with those who can truly help.</p>
+         <div class="modal-footer">
+         
+          <a href="/report" class="btn-gray btn-lg btn-report">Report</a>
+          
+          <div class="btn-close btn-white btn-lg" data-dismiss="modal">Close and Continue</div>
+         </div>
+       </div>
+     </div>
+   </div>
+ </div> <!-- End of Modal About2 -->
+
+
+    
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/underscore.js"></script>
+    <script src="js/moment.js"></script>
+
+    <!-- Scroll to fixed -->
+    <script src="js/scrolltofixed.js" type="text/javascript"></script>
+
+    <!-- Flip Switch -->
+    <script src="js/jquery.switchButton.js" type="text/javascript"></script>
+
+     <!-- Nice Scroll Files -->
+    <script src="js/jquery.nicescroll.min.js" type="text/javascript"></script>
+
+    <!-- Custom Form Elements -->
+    <script src="js/custom-form-elements.js" type="text/javascript"></script>
+
+    <!-- Custom File Upload -->
+    <script src="js/jQuery.fileinput.js" type="text/javascript"></script>
+
+    <!-- Custom Script  -->
+    <script src="js/custom.js" type="text/javascript"></script>
+    <script src="js/main.js"></script>
+    <script src="js/notify.js"></script>  
+
+    <!-- GIGYA -->
+
+    <script type="text/javascript">
+    
+
+    function onLoginHandler(eventObj) {
+        var params = {
+            siteUID: "4",
+            timestamp: "1538472030.47",
+            cid:'',
+            signature: "WNUSP9/EQ2j3kX1gbEtXSmwMrNc="
+        };
+        gigya.socialize.notifyRegistration(params);
+        console.log(eventObj);
+    }
+
+    </script>
+    <!-- Google Map -->
+    <script src="https://maps-api-ssl.google.com/maps/api/js?v=3.17&libraries=places&key=AIzaSyDgJ7cuhTogGyJj91ste8Uq8f9kl3ln8qA&sensor=true"></script>
+    <script src="js/markerclusterer.js"></script>
+    <!-- <script src="/js/spidermarker.js"></script> -->
+
+    <script>
+
+      $.getJSON( "/api/v1/ebayanihan/events", function(data) {      
+        var events = data.data;
+        events.forEach(function(element){
+          $('#report-events-options').append($('<option>', {
+              value: element.attributes.slug,
+              text: element.attributes.name
+            }))
+        })
+      });
+
+      $('#report-events-options').on('change', function(){
+        var event = this.value;
+        if(event != 'SELECT_EVENTS')
+          window.location.href = "/reports/archived/" + event;
+      })
+
+      var first = true;
+      var fetching_data = false;
+      var map;
+      window.current_report_type = "ALL";
+      window.current_report_sort = "DATE_DOWN";
+      window.current_report_verified = "ALL";
+
+      
+      window.current_tags_string = null;
+      
+
+      function zoom_in_to_coords(coords){
+        window.this_map.setZoom(16);
+        window.this_map.panTo(coords);
+
+        window.this_map2.setZoom(16);
+        window.this_map2.panTo(coords);
+
+        if(window.current_marker){
+          window.current_marker.setPosition(coords);
+          adjust_map();
+          latlong = window.current_marker.getPosition();
+          get_address_from_lat_lng(latlong.lat(), latlong.lng());
+        }
+      }
+
+
+      var renderReportBoundingBoxTimeout = null;
+      var renderDatasetBoundingBoxTimeout = null;
+      function initialize() {
+        
+        var default_lat = 12.683152;
+        var default_lng = 122.730924;
+        var default_zoom = 6
+        
+        var mapOptions = {
+          zoom: default_zoom,
+          minZoom: 5,
+          center: new google.maps.LatLng(default_lat, default_lng),
+          zoomControl:true,
+          panControl: false,
+          streetViewControl:false,
+          mapTypeControl: false,
+          zoomControlOptions: {
+              position: google.maps.ControlPosition.LEFT_CENTER
+          }
+        };
+        map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
+        window.this_map = map;
+        /*window.oms = new OverlappingMarkerSpiderfier(window.this_map);*/
+
+        
+
+
+        var input = /** @type {HTMLInputElement} */(
+            document.getElementById('search-location-input'));
+
+        var searchBox = new google.maps.places.SearchBox(
+          /** @type {HTMLInputElement} */(input));
+
+        // hb
+        var input2 = /** @type {HTMLInputElement} */(
+            document.getElementById('search-location-input-2'));
+
+        var searchBox2 = new google.maps.places.SearchBox(
+          /** @type {HTMLInputElement} */(input2));
+        // end hb
+
+        var bounds = new google.maps.LatLngBounds(
+            new google.maps.LatLng(5.000000000, 115.000000000),
+            new google.maps.LatLng(20.000000000, 130.000000000));
+        searchBox.setBounds(bounds);
+
+        google.maps.event.addListener(searchBox, 'places_changed', function(){
+          var places = searchBox.getPlaces();
+          if (places.length == 0){
+            return;
+          }
+          console.log(places[0]);
+          console.log(places[0].geometry);
+          if(places[0].geometry){
+            var new_coords = places[0].geometry.location;
+            if(new_coords){
+              zoom_in_to_coords(new_coords);
+            }
+          }
+        });
+
+        google.maps.event.addListener(searchBox2, 'places_changed', function(){
+          var places = searchBox2.getPlaces();
+          if (places.length == 0){
+            return;
+          }
+          console.log(places[0]);
+          console.log(places[0].geometry);
+          if(places[0].geometry){
+            var new_coords = places[0].geometry.location;
+            if(new_coords){
+              zoom_in_to_coords(new_coords);
+            }
+          }
+        });
+
+        
+
+        // initialize second map
+        map2 = new google.maps.Map(document.getElementById('map-canvas-2'),
+            mapOptions);
+        window.this_map2 = map2;
+        // end
+
+        
+
+        fetch_data();
+        
+        fetch_reports();
+        
+        get_user_location();
+      }
+
+      google.maps.event.addDomListener(window, 'load', initialize);
+
+      function MapSwitcher() {
+        try {
+          if($(window).width() > 1024) {
+            sw = window.this_map.getBounds().getSouthWest();
+            ne = window.this_map.getBounds().getNorthEast();
+            get_reports_in_square(sw, ne, window.this_map);
+          }
+          else if($(window).width() < 1025) {
+            sw = window.this_map2.getBounds().getSouthWest();
+            ne = window.this_map2.getBounds().getNorthEast();
+            get_reports_in_square(sw, ne, window.this_map2);
+          }
+        } catch(ex) {
+          console.log(ex);
+            setTimeout(function() {MapSwitcher();}, 1000);
+        }
+      }
+
+      function DatasetsMapSwitcher() {
+        try {
+          if($(window).width() > 1024) {
+            sw = window.this_map.getBounds().getSouthWest();
+            ne = window.this_map.getBounds().getNorthEast();
+            get_datasets_in_square(sw, ne, window.this_map.zoom);
+          }
+          else if($(window).width() < 1025) {
+            sw = window.this_map2.getBounds().getSouthWest();
+            ne = window.this_map2.getBounds().getNorthEast();
+            get_datasets_in_square(sw, ne, window.this_map2.zoom);
+          }
+        } catch(ex) {
+          console.log(ex);
+          render_data_options();
+        }
+      }
+
+
+
+      function get_reports_in_square(sw, ne, _map) {
+        
+        
+        render_reports(false);
+        
+      }
+
+      function distance(lat1, lon1, lat2, lon2, unit) {
+        var radlat1 = Math.PI * lat1/180;
+        var radlat2 = Math.PI * lat2/180;
+        var radlon1 = Math.PI * lon1/180;
+        var radlon2 = Math.PI * lon2/180;
+        var theta = lon1-lon2;
+        var radtheta = Math.PI * theta/180;
+        var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+        dist = Math.acos(dist);
+        dist = dist * 180/Math.PI;
+        dist = dist * 60 * 1.1515;
+        if (unit=="K") { dist = dist * 1.609344 };
+        if (unit=="N") { dist = dist * 0.8684 };
+        if (unit=="M") { dist = dist * 1609.344 };
+        if (unit=="M2") { dist = (dist * 1609.344) / 2 };
+        return dist;
+      }
+
+      function ListUniquify(value, index, self) {
+          return self.indexOf(value) === index;
+      }
+    </script>
+
+    <script type="text/javascript">
+
+    function get_current_map_url(){
+      var zoom = window.this_map.getZoom();
+      var latlng = window.this_map.getCenter();
+
+      var lat = latlng.lat();
+      var lng = latlng.lng();
+
+      var url = window.location.origin + '/location/' + zoom + '/' + lat + '/' + lng;
+      console.log(url);
+      return url;
+    }
+
+
+    function create_map_view(){
+      var map_view_name = prompt("Please enter the map view url name");
+      if(map_view_name){
+        var zoom = window.this_map.getZoom();
+        var latlng = window.this_map.getCenter();
+        var lat = latlng.lat();
+        var lng = latlng.lng();
+
+        var post_data = {'zoom': zoom, 'lat': lat, 'lng': lng, 'map_link_name': map_view_name};
+
+        $.ajax({
+          url: '/admin2/map_links',
+          type: 'POST',
+          data: post_data,
+          success: function(data) {
+            console.log(data);
+            window.location = data.url;
+          },
+          error: function(request, status, error) {
+            console.log(request.responseText);
+            alert(request.responseText);
+          }
+        });
+      }
+    }
+
+
+    function facebook_share(){
+      
+      var url = "http://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(get_current_map_url());
+      
+      var win = window.open(url, '_blank');
+      win.focus();
+    }
+
+
+    function twitter_share(){
+      
+      var url = "https://twitter.com/intent/tweet?via=ResQme&url=" + encodeURIComponent(get_current_map_url());
+      
+      url += '&text=' + encodeURIComponent('Check out our crowdsourced map as tropical cyclone moves through the PH');
+      var win = window.open(url, '_blank');
+      win.focus();
+    }
+
+
+    function get_user_location(){
+      navigator.geolocation.getCurrentPosition(success);
+
+      function success(position) {
+        window.current_user_location = {};
+        window.current_user_location.lat = position.coords.latitude;
+        window.current_user_location.lng = position.coords.longitude;
+        zoom_user_location();
+        /*zoom_in_to_coords(new google.maps.LatLng(window.current_user_location.lat, window.current_user_location.lng));*/
+      }
+    }
+
+    function zoom_user_location(){
+        if(window.current_user_location){
+            zoom_in_to_coords(new google.maps.LatLng(window.current_user_location.lat, window.current_user_location.lng));
+            myLatlng = new google.maps.LatLng(window.current_user_location.lat, window.current_user_location.lng);
+
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                map: window.this_map,
+                animation: google.maps.Animation.DROP,
+                title: 'Your Location'
+            });
+            window.current_user_marker = marker;
+            adjust_map();
+        }
+    }
+
+    function refresh_records(){
+      /*if(window.selected_report === null && !window.creating_a_report){
+        fetch_reports();
+      }
+      else {
+        done_loading();
+      }*/
+    }
+
+
+    function replaceAll(find, replace, str) {
+      return str.replace(new RegExp(find, 'g'), replace);
+    }
+
+
+    function get_adjustment_h(){
+      return ((Math.max(document.documentElement.clientHeight, window.innerHeight || 0)/3))
+    }
+
+
+    function get_adjustment_w(){
+      return 0;
+    }
+
+
+    function adjust_map(){
+      window.this_map.panBy(get_adjustment_w(), -get_adjustment_h());
+      window.this_map2.panBy(get_adjustment_w(), -get_adjustment_h());
+    }
+
+    function create_a_report(){
+
+      console.log("create_a_report()");
+
+      close_all_info_windows();
+      clear_info_window(false);
+      $(".report_item").removeClass("highlight");
+      window.creating_a_report = true;
+
+      if(!firebase.auth().currentUser) {
+        $("#rpl_auth_container").click();
+        return
+      } else {
+        
+        firebase.auth().currentUser.getIdToken().then(function(token) {
+
+          console.log('token');
+          console.log(token);
+
+          contentString = $("#create-a-report-form").html();
+
+          if(window.current_user_location){
+            contentString = replaceAll("%%top_warning%%", "", contentString);
+          } else {
+            contentString = replaceAll("%%top_warning%%", '<div class="top-warning"><p>Please <b>ALLOW</b> us to track your location first so we can respond accurately to your alert.</p></div>', contentString);
+          }          
+
+          contentString = replaceAll("%%token%%", token, contentString);
+
+          var myLatlng = window.this_map.getCenter();
+
+          if(window.this_map.getZoom() < 16){
+            if(window.current_user_location){
+              zoom_in_to_coords(new google.maps.LatLng(window.current_user_location.lat, window.current_user_location.lng));
+              myLatlng = new google.maps.LatLng(window.current_user_location.lat, window.current_user_location.lng);
+            }
+          }
+
+
+          var marker = new google.maps.Marker({
+            position: myLatlng,
+            map: window.this_map,
+            draggable: true,
+            animation: google.maps.Animation.DROP,
+            title: 'Create a Report'
+          });
+
+
+          google.maps.event.addListener(marker, 'dragend', function()
+          {
+            marker.setAnimation(google.maps.Animation.DROP);
+            window.this_map.panTo(marker.getPosition());
+            adjust_map();
+            latlong = marker.getPosition();
+            get_address_from_lat_lng(latlong.lat(), latlong.lng());
+            $("#write-your-report-here").focus();
+          });
+
+          marker.infowindow =  new google.maps.InfoWindow({
+            content: contentString
+          });
+
+          marker.infowindow.open(window.this_map,marker);
+
+          try {
+            window.current_user_marker.setMap(null);
+            window.current_user_marker = null;
+          }
+          catch(e){
+            console.log(e);
+          }
+          window.current_marker = marker;
+
+          get_address_from_lat_lng(myLatlng.lat(), myLatlng.lng());
+          adjust_map();
+
+          google.maps.event.addListener(marker.infowindow, 'domready', function(){
+            $(".gm-style-iw").next("div").hide();
+          });
+
+          $("#write-your-report-here").focus();          
+        })        
+      }
+    }
+
+    
+
+    function delete_current_marker(){
+      if(window.current_marker){
+        if(window.current_marker.infowindow){
+           window.current_marker.infowindow.close();
+        }
+        window.current_marker.setMap(null);
+        window.current_marker = null;
+      }
+
+
+    }
+
+    function fetch_initial_report(report_id){
+      $.getJSON( "/api/v2/reports/" + report_id + "?expand=owner", function(data) {
+        console.log(data);
+
+        var twitter = ["tweet","twitter"];
+        var sms = ["sms","text","mobile","phone","chikka"];
+        var computer = ["web","computer", "laptop"];
+        var icon = "laptop";
+
+        for(i=0; i<1; i++){
+          var icon = "laptop";
+          if(data.reports[i].source){
+            if(twitter.indexOf(data.reports[i].source.toLowerCase()) > -1){
+              icon = "twitter";
+            }
+            else if(sms.indexOf(data.reports[i].source.toLowerCase()) > -1){
+              icon = "phone";
+            }
+          }
+
+          window.reports[0] = {
+            "id": data.reports[i].id,
+            "content": data.reports[i].content,
+            "created": data.reports[i].created,
+            "current_user_vote": data.reports[i].current_user_vote,
+            "key": data.reports[i].key,
+            "lat": data.reports[i].lat,
+            "lng": data.reports[i].lng,
+            "location": data.reports[i].location,
+            "owner": data.reports[i].owner,
+            "photos": data.reports[i].photos,
+            "responded": data.reports[i].responded,
+            "responder": data.reports[i].responder,
+            "source": data.reports[i].source,
+            "special_report": data.reports[i].special_report,
+            "type": data.reports[i].type,
+            "verified": data.reports[i].verified,
+            "verifier": data.reports[i].verifier,
+            "vote_ups": data.reports[i].vote_ups,
+            "replies": data.reports[i].replies,
+            "voted": data.reports[i].current_user_vote,
+            "icon": icon
+          }
+          fetch_comments(0);
+        }
+      });
+    }
+
+    window.selected_report = null;
+    window.selected_sidebar = null;
+    window.creating_a_report = false
+    window.reports = [];
+    window.current_report_length = 0;
+    window.report_lists = new Object();
+    window.bound_box_report_lists = [];
+
+    
+
+    function highlight_report_item(report_index){
+      $(".report_item").removeClass("highlight");
+      $("#specific_report_item_" + report_index).addClass("highlight");
+
+      if(!window.selected_sidebar || window.selected_sidebar != report_index){
+        window.selected_sidebar = report_index;
+        try {
+          $('#sidebar-report').animate({
+              scrollTop: ($("#specific_report_item_" + report_index).offset().top - $('#sidebar-report').offset().top + $('#sidebar-report').scrollTop() - 100)
+          }, 500);
+        } catch(ex) {
+          console.log(ex);
+        }
+      }
+    }
+
+
+    function specific_report(report_index, not_from_click){
+      window.selected_report = report_index;
+      close_all_info_windows();
+      if (!not_from_click) {
+        fetching_data = false;
+        render_markers();
+      } else {
+        clear_info_window(fetching_data);
+      }
+
+      highlight_report_item(report_index);
+
+      if(window.reports[report_index].marker){
+        console.log("render_info_window(" + report_index + ")");
+        if(window.reports[report_index].marker){
+          if(window.this_map.getZoom() < 16){
+            zoom_in_to_coords(window.reports[report_index].marker.getPosition());
+            adjust_map();
+          }
+          else {
+            window.this_map.panTo(window.reports[report_index].marker.getPosition());
+            adjust_map();
+          }
+          render_info_window(report_index);
+          render_info_window2(report_index);
+        }
+      }
+
+      setTimeout(function() { $(".modal-body").css("padding",  "19px"); }, 1000);
+    }
+
+
+    function close_all_info_windows(){
+      if(window.selected_report === null){
+        // do nothing
+      }
+      else {
+        fetch_comments(window.selected_report);
+        try {
+            window.reports[window.selected_report].marker.infowindow.close();
+        } catch(e) {
+          console.log(e);
+          clear_info_window(false);
+        }
+        try {
+            window.reports[window.selected_report].marker2.infowindow.close();
+        } catch(e) {
+          console.log(e);
+          clear_info_window(false);
+        }
+
+        window.selected_report = null;
+      }
+
+      window.creating_a_report = false;
+
+      delete_current_marker();
+    }
+
+
+    function toTitleCase(str) {
+        return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+    }
+
+
+    function truncateString(string, limit, breakChar, rightPad) {
+        if (string.length <= limit) return string;
+
+        var substr = string.substr(0, limit);
+        if ((breakPoint = substr.lastIndexOf(breakChar)) >= 0) {
+            if (breakPoint < string.length -1) {
+                return string.substr(0, breakPoint) + rightPad;
+            }
+        }
+
+        return string;
+
+    }
+
+
+    function change_http_to_https(content){
+        if(content){
+          return content.replace(new RegExp('http://', 'g'), 'https://');
+        }
+        else {
+          return "";
+        }
+    }
+
+
+    function render_info_window(report_index){
+      contentString = $("#specific-report").html();
+      contentString = replaceAll("%%content%%", change_http_to_https(window.reports[report_index].content), contentString);
+
+      contentString = replaceAll("%%content_share%%", encodeURIComponent(truncateString(change_http_to_https(window.reports[report_index].content), 110, ' ', '...')), contentString);
+
+      if(!window.reports[report_index].verified){
+        contentString = replaceAll("%%not_verified%%", "hide", contentString);
+      }
+      else {
+        contentString = replaceAll("%%not_verified%%", "", contentString);
+      }
+
+      if(!window.reports[report_index].owner.official){
+        contentString = replaceAll("%%official%%", "", contentString);
+      }
+      else {
+        contentString = replaceAll("%%official%%", '<img src="/img/ico-official.svg" class="official-user" title="Verified" alt="Verified">', contentString);
+      }
+
+      if(!window.reports[report_index].verified){
+        contentString = replaceAll("%%verifier_text%%", "hide", contentString);
+      }
+      else {
+        contentString = replaceAll("%%verifier_text%%", "Verified by " + window.reports[report_index].verifier, contentString);
+      }
+
+      contentString = replaceAll("%%icon%%", window.reports[report_index].icon, contentString);
+
+      if (window.reports[report_index].type == "info" || window.reports[report_index].type == "flood" || window.reports[report_index].type == "rescue") {
+        contentString = replaceAll("%%type%%", toTitleCase(window.reports[report_index].type) + " Alert", contentString);
+      } else {
+        contentString = replaceAll("%%type%%", toTitleCase(window.reports[report_index].type), contentString);
+      }
+
+      contentString = replaceAll("%%type_lower%%", window.reports[report_index].type.toLowerCase(), contentString);
+
+      if(window.reports[report_index].replies == 1){
+        contentString = replaceAll("%%replies%%", window.reports[report_index].replies + " reply ", contentString);
+      }
+      else {
+        contentString = replaceAll("%%replies%%", window.reports[report_index].replies + " replies ", contentString);
+      }
+
+      if(window.reports[report_index].location){
+        contentString = replaceAll("%%location%%", window.reports[report_index].location, contentString);
+        contentString = replaceAll("%%nolocation%%", "", contentString);
+      }
+      else {
+        contentString = replaceAll("%%location%%", "", contentString);
+        contentString = replaceAll("%%nolocation%%", "hide", contentString);
+      }
+
+      
+
+      contentString = replaceAll("%%id%%", window.reports[report_index].id, contentString);
+
+      if(window.reports[report_index].photos.length >= 1){
+        if(window.reports[report_index].photos[0]){
+          contentString = replaceAll("%%photo%%", '<img src="' + change_http_to_https(window.reports[report_index].photos[0]) + '" />', contentString);
+        }
+        else{
+          contentString = replaceAll("%%photo%%", '', contentString);
+        }
+        contentString = replaceAll("%%photo_url%%", window.reports[report_index].photos[0], contentString);
+      }
+      else {
+        contentString = replaceAll("%%photo%%", "", contentString);
+        contentString = replaceAll("%%photo_url%%", window.reports[report_index].photos[0], contentString);
+      }
+
+      contentString = replaceAll("%%timestamp%%", moment.unix(window.reports[report_index].created).fromNow(), contentString);
+
+      if(window.reports[report_index].owner){
+        contentString = replaceAll("%%owner%%", window.reports[report_index].owner.name, contentString);
+        contentString = replaceAll("%%noowner%%", "", contentString);
+      }
+      else if(window.reports[report_index].name && window.reports[report_index].source.toUpperCase() == 'TWITTER'){
+        contentString = replaceAll("%%owner%%", '@' + window.reports[report_index].name, contentString);
+        contentString = replaceAll("%%noowner%%", "", contentString);
+      }
+      else {
+        contentString = replaceAll("%%owner%%", "Unknown", contentString);
+        contentString = replaceAll("%%noowner%%", "hide", contentString);
+      }
+
+      contentString = replaceAll("%%vote_ups%%", window.reports[report_index].vote_ups, contentString);
+
+      contentString = replaceAll("%%index%%", report_index, contentString);
+
+      comments_string = render_comments(report_index)
+
+      contentString = replaceAll("%%comments%%", comments_string, contentString);
+
+      window.reports[report_index].marker.infowindow = new google.maps.InfoWindow({
+          content: contentString
+      });
+
+      window.reports[report_index].marker.infowindow.open(window.this_map,window.reports[report_index].marker);
+
+      window.selected_report = report_index;
+
+      google.maps.event.addListener(window.reports[report_index].marker.infowindow, 'domready', function(){
+          $(".gm-style-iw").next("div").hide();
+      });
+
+      // setTimeout(function(){$('.fancybox').fancybox(); }, 2000);
+
+    }
+
+    function render_info_window2(report_index){
+      contentString = $("#specific-report").html();
+
+      contentString = replaceAll("%%content%%", change_http_to_https(window.reports[report_index].content), contentString);
+
+      contentString = replaceAll("%%content_share%%", encodeURIComponent(truncateString(change_http_to_https(window.reports[report_index].content), 110, ' ', '...')), contentString);
+
+      if(!window.reports[report_index].verified){
+        contentString = replaceAll("%%not_verified%%", "hide", contentString);
+      }
+      else {
+        contentString = replaceAll("%%not_verified%%", "", contentString);
+      }
+
+      if(!window.reports[report_index].owner.official){
+        contentString = replaceAll("%%official%%", "", contentString);
+      }
+      else {
+        contentString = replaceAll("%%official%%", '<img src="/img/ico-official.svg" class="official-user" title="Verified" alt="Verified">', contentString);
+      }
+
+      if(!window.reports[report_index].verified){
+        contentString = replaceAll("%%verifier_text%%", "hide", contentString);
+      }
+      else {
+        contentString = replaceAll("%%verifier_text%%", "Verified by " + window.reports[report_index].verifier, contentString);
+      }
+
+      contentString = replaceAll("%%icon%%", window.reports[report_index].icon, contentString);
+
+      if (window.reports[report_index].type == "info" || window.reports[report_index].type == "flood" || window.reports[report_index].type == "rescue") {
+        contentString = replaceAll("%%type%%", toTitleCase(window.reports[report_index].type) + " Alert", contentString);
+      } else {
+        contentString = replaceAll("%%type%%", toTitleCase(window.reports[report_index].type), contentString);
+      }
+
+      contentString = replaceAll("%%type_lower%%", window.reports[report_index].type.toLowerCase(), contentString);
+
+      if(window.reports[report_index].replies == 1){
+        contentString = replaceAll("%%replies%%", window.reports[report_index].replies + " reply ", contentString);
+      }
+      else {
+        contentString = replaceAll("%%replies%%", window.reports[report_index].replies + " replies ", contentString);
+      }
+
+      if(window.reports[report_index].location){
+        contentString = replaceAll("%%location%%", window.reports[report_index].location, contentString);
+        contentString = replaceAll("%%nolocation%%", "", contentString);
+      }
+      else {
+        contentString = replaceAll("%%location%%", "", contentString);
+        contentString = replaceAll("%%nolocation%%", "hide", contentString);
+      }
+
+      contentString = replaceAll("%%id%%", window.reports[report_index].id, contentString);
+
+      if(window.reports[report_index].photos.length >= 1){
+        contentString = replaceAll("%%photo%%", '<img src="' + change_http_to_https(window.reports[report_index].photos[0]) + '" />', contentString);
+        contentString = replaceAll("%%photo_url%%", window.reports[report_index].photos[0], contentString);
+      }
+      else {
+        contentString = replaceAll("%%photo%%", "", contentString);
+        contentString = replaceAll("%%photo_url%%", window.reports[report_index].photos[0], contentString);
+      }
+
+      contentString = replaceAll("%%timestamp%%", moment.unix(window.reports[report_index].created).fromNow(), contentString);
+
+      if(window.reports[report_index].owner){
+        contentString = replaceAll("%%owner%%", window.reports[report_index].owner.name, contentString);
+        contentString = replaceAll("%%noowner%%", "", contentString);
+      }
+      else if(window.reports[report_index].name && window.reports[report_index].source.toUpperCase() == 'TWITTER'){
+        contentString = replaceAll("%%owner%%", '@' + window.reports[report_index].name, contentString);
+        contentString = replaceAll("%%noowner%%", "", contentString);
+      }
+      else {
+        contentString = replaceAll("%%owner%%", "Unknown", contentString);
+        contentString = replaceAll("%%noowner%%", "hide", contentString);
+      }
+
+      contentString = replaceAll("%%vote_ups%%", window.reports[report_index].vote_ups, contentString);
+
+      contentString = replaceAll("%%index%%", report_index, contentString);
+
+      comments_string = render_comments(report_index)
+
+      contentString = replaceAll("%%comments%%", comments_string, contentString);
+
+
+      window.reports[report_index].marker2.infowindow = new google.maps.InfoWindow({
+          content: contentString
+      });
+
+      window.reports[report_index].marker2.infowindow.open(window.this_map2,window.reports[report_index].marker2);
+
+      window.selected_report = report_index;
+
+      google.maps.event.addListener(window.reports[report_index].marker2.infowindow, 'domready', function(){
+          $(".gm-style-iw").next("div").hide();
+      });
+    }
+
+    function remove_markers(){
+      if(window.reports){
+        if(window.reports.length > 0){
+          for(i=0; i<window.reports.length;i++){
+            if(window.reports[i].marker){
+              window.reports[i].marker.setMap(null);
+            }
+
+            if(window.reports[i].marker2){
+              window.reports[i].marker2.setMap(null);
+            }
+
+          }
+        }
+      }
+    }
+
+
+    function get_final_lat_lng(latlng){
+      var finalLatLng = latlng;
+
+      if (window.reports.length != 0) {
+          for (i=0; i < window.reports.length; i++) {
+            if(window.reports[i].marker){
+              var existingMarker = window.reports[i].marker;
+              var pos = existingMarker.getPosition();
+
+              //if a marker already exists in the same position as this marker
+              if (latlng.equals(pos)) {
+                  //update the position of the coincident marker by applying a small multipler to its coordinates
+                  var newLat = latlng.lat() + (Math.random() -.5) / 15000;// * (Math.random() * (max - min) + min);
+                  var newLng = latlng.lng() + (Math.random() -.5) / 15000;// * (Math.random() * (max - min) + min);
+                  finalLatLng = new google.maps.LatLng(newLat,newLng);
+              }
+            }
+          }
+      }
+      return finalLatLng;
+    }
+
+    function done_loading(){
+      setTimeout(function(){refresh_records();}, 3000);
+
+    }
+
+    window.marker_list = ["INFO", "RESCUE", "FLOOD", "BRIDGE", "EARTHQUAKE", "EARTHQUAKE-EVACUATION-SITE", "FIRE", "LANDSLIDE", "RAIN", "RELIEF", "STORM-SURGE", "VOLCANIC-ERUPTION"];
+    window.this_map_markers = {
+      "INFO": null,
+      "RESCUE": null,
+      "FLOOD": null,
+      "BRIDGE": null,
+      "EARTHQUAKE": null,
+      "EARTHQUAKE-EVACUATION-SITE": null,
+      "FIRE": null,
+      "LANDSLIDE": null,
+      "RAIN": null,
+      "RELIEF": null,
+      "STORM-SURGE": null,
+      "VOLCANIC-ERUPTION": null,
+      "ACCIDENT": null,
+    }
+
+    window.this_map_markers2 = {
+      "INFO": null,
+      "RESCUE": null,
+      "FLOOD": null,
+      "BRIDGE": null,
+      "EARTHQUAKE": null,
+      "EARTHQUAKE-EVACUATION-SITE": null,
+      "FIRE": null,
+      "LANDSLIDE": null,
+      "RAIN": null,
+      "RELIEF": null,
+      "STORM-SURGE": null,
+      "VOLCANIC-ERUPTION": null,
+      "ACCIDENT": null,
+    }
+
+    window.clusters_style = {
+      "INFO": [{
+        url: '/img/icon-info-alert-cluster.png',
+        height: 40,
+        width: 40,
+        anchorIcon: [40, 20],
+        anchorText: [-8,0],
+        /*textColor: '#ff00ff',*/
+        textSize: 11,
+        markerIcon: '/img/marker-info.png'
+      }],
+      "RESCUE": [{
+        url: '/img/icon-rescue-cluster.png',
+        height: 40,
+        width: 40,
+        anchorIcon: [40, 20],
+        anchorText: [-8,0],
+        /*textColor: '#ff00ff',*/
+        textSize: 11,
+        markerIcon: '/img/marker-rescue.png'
+      }],
+      "FLOOD": [{
+        url: '/img/icon-flood-cluster.png',
+        height: 40,
+        width: 40,
+        anchorIcon: [40, 20],
+        anchorText: [-8,0],
+        /*textColor: '#ff00ff',*/
+        textSize: 11,
+        markerIcon: '/img/marker-flood.png'
+      }],
+      "BRIDGE": [{
+        url: '/img/icon-bridge-cluster.png',
+        height: 40,
+        width: 40,
+        anchorIcon: [40, 20],
+        anchorText: [-8,0],
+        /*textColor: '#ff00ff',*/
+        textSize: 11,
+        markerIcon: '/img/marker-bridge.png'
+      }],
+      "EARTHQUAKE": [{
+        url: '/img/icon-earthquake-cluster.png',
+        height: 40,
+        width: 40,
+        anchorIcon: [40, 20],
+        anchorText: [-8,0],
+        /*textColor: '#ff00ff',*/
+        textSize: 11,
+        markerIcon: '/img/marker-earthquake.png'
+      }],
+      "EARTHQUAKE-EVACUATION-SITE": [{
+        url: '/img/icon-earthquake-evacuation-site-cluster.png',
+        height: 40,
+        width: 40,
+        anchorIcon: [40, 20],
+        anchorText: [-8,0],
+        /*textColor: '#ff00ff',*/
+        textSize: 11,
+        markerIcon: '/img/marker-earthquake-evacuation-site.png'
+      }],
+      "FIRE": [{
+        url: '/img/icon-fire-cluster.png',
+        height: 40,
+        width: 40,
+        anchorIcon: [40, 20],
+        anchorText: [-8,0],
+        /*textColor: '#ff00ff',*/
+        textSize: 11,
+        markerIcon: '/img/marker-fire.png'
+      }],
+      "LANDSLIDE": [{
+        url: '/img/icon-landslide-cluster.png',
+        height: 40,
+        width: 40,
+        anchorIcon: [40, 20],
+        anchorText: [-8,0],
+        /*textColor: '#ff00ff',*/
+        textSize: 11,
+        markerIcon: '/img/marker-landslide.png'
+      }],
+      "RAIN": [{
+        url: '/img/icon-rain-cluster.png',
+        height: 40,
+        width: 40,
+        anchorIcon: [40, 20],
+        anchorText: [-8,0],
+        /*textColor: '#ff00ff',*/
+        textSize: 11,
+        markerIcon: '/img/marker-rain.png'
+      }],
+      "RELIEF": [{
+        url: '/img/icon-relief-cluster.png',
+        height: 40,
+        width: 40,
+        anchorIcon: [40, 20],
+        anchorText: [-8,0],
+        /*textColor: '#ff00ff',*/
+        textSize: 11,
+        markerIcon: '/img/marker-relief.png'
+      }],
+      "STORM-SURGE": [{
+        url: '/img/icon-storm-surge-cluster.png',
+        height: 40,
+        width: 40,
+        anchorIcon: [40, 20],
+        anchorText: [-8,0],
+        /*textColor: '#ff00ff',*/
+        textSize: 11,
+        markerIcon: '/img/marker-storm-surge.png'
+      }],
+      "VOLCANIC-ERUPTION": [{
+        url: '/img/icon-volcanic-eruption-cluster.png',
+        height: 40,
+        width: 40,
+        anchorIcon: [40, 20],
+        anchorText: [-8,0],
+        /*textColor: '#ff00ff',*/
+        textSize: 11,
+        markerIcon: '/img/marker-volcanic-eruption.png'
+      }],
+      "ACCIDENT": [{
+        url: '/img/marker-info.png',
+        height: 40,
+        width: 40,
+        anchorIcon: [40, 20],
+        anchorText: [-8,0],
+        /*textColor: '#ff00ff',*/
+        textSize: 11,
+        markerIcon: '/img/marker-info.png'
+      }]
+    };
+
+    function clear_info_window(f_d) {
+      if (!f_d) {
+        for(index in window.marker_list) {
+          if(window.this_map_markers[window.marker_list[index]]){
+            window.this_map_markers[window.marker_list[index]].clearMarkers();
+          }
+          window.this_map_markers[window.marker_list[index]] = new MarkerClusterer(window.this_map, [], {styles: window.clusters_style[window.marker_list[index]], averageCenter: true, maxZoom: 15});
+
+
+        // ------------------------------------- hb --2--------------------------------
+          if(window.this_map_markers2[window.marker_list[index]]){
+            window.this_map_markers2[window.marker_list[index]].clearMarkers();
+          }
+          window.this_map_markers2[window.marker_list[index]] = new MarkerClusterer(window.this_map2, [], {styles: window.clusters_style[window.marker_list[index]], averageCenter: true, maxZoom: 15});
+        }
+        // ---------------------------------- end -----------------------------------
+
+        remove_markers();
+      }
+      fetching_data = false;
+    }
+
+    function render_markers(){
+      fetching_data = false;
+      clear_info_window(fetching_data);
+
+      for (var i = 0; i < window.reports.length; i++) {
+        var report = window.reports[i];
+        // if (window.bound_box_report_lists.indexOf(parseInt(report.id)) > -1) {
+          if(!report.lat){
+            continue;
+          }
+
+          if(report.lat == "None"){
+            continue;
+          }
+
+          try {
+            image_url = window.clusters_style[report.type.toUpperCase()][0].markerIcon;
+          } catch(ex) {
+            console.log("alert!!! error in render_markers image_url markers..");
+            image_url = "/img/marker-info.png";
+          }
+
+          image = {
+              url: image_url,
+              size: new google.maps.Size(27, 45),
+              origin: new google.maps.Point(0,0),
+              anchor: new google.maps.Point(12, 33)
+          };
+
+          var myLatLng = new google.maps.LatLng(parseFloat(report.lat), parseFloat(report.lng));
+
+          var marker = new google.maps.Marker({
+              position: get_final_lat_lng(myLatLng),
+              map: window.this_map,
+              icon: image,
+              title: report.content
+          });
+
+          marker.report_index = i;
+
+          // ------------------------------------- hb --------------------------
+          var marker2 = new google.maps.Marker({
+              position: get_final_lat_lng(myLatLng),
+              map: window.this_map2,
+              icon: image,
+              title: report.content
+          });
+
+          marker2.report_index = i;
+          // ------------------------------------- end ---------------------------
+
+          google.maps.event.addListener(marker, 'click', function() {
+            specific_report(this.report_index);
+          });
+
+          google.maps.event.addListener(marker2, 'click', function() {
+            specific_report(this.report_index);
+          });
+
+          window.reports[i].marker = marker;
+
+          window.reports[i].marker2 = marker2;
+
+          try{
+            window.this_map_markers[report.type.toUpperCase()].addMarker(marker);
+            window.this_map_markers2[report.type.toUpperCase()].addMarker(marker);
+          }
+          catch(e){
+            console.log(report.type.toUpperCase());
+          }
+          
+        // }
+      }
+
+      done_loading();
+
+    }
+
+    function render_markers_second_map(){
+      for(index in window.marker_list) {
+        if(window.this_map_markers2[window.marker_list[index]]){
+          window.this_map_markers2[window.marker_list[index]].clearMarkers();
+        }
+        window.this_map_markers2[window.marker_list[index]] = new MarkerClusterer(window.this_map2, [], {styles: window.clusters_style[window.marker_list[index]], averageCenter: true, maxZoom: 15});
+      }
+
+      remove_markers();
+
+      for (var i = 0; i < window.reports.length; i++) {
+        var report = window.reports[i];
+
+        if(!report.lat){
+          continue;
+        }
+
+        if(report.lat == "None"){
+          continue;
+        }
+
+        try {
+          image_url = window.clusters_style[report.type.toUpperCase()][0].markerIcon;
+        } catch(ex) {
+          console.log(ex);
+          console.log("alert!!! error in render_markers image_url markers..");
+          image_url = "/img/marker-info.png";
+        }
+
+        image = {
+            url: image_url,
+            size: new google.maps.Size(27, 45),
+            origin: new google.maps.Point(0,0),
+            anchor: new google.maps.Point(12, 33)
+        };
+
+        var myLatLng = new google.maps.LatLng(parseFloat(report.lat), parseFloat(report.lng));
+
+        var marker = new google.maps.Marker({
+            position: get_final_lat_lng(myLatLng),
+            map: window.this_map,
+            icon: image,
+            title: report.content
+        });
+
+        marker.report_index = i;
+
+        google.maps.event.addListener(marker, 'click', function() {
+          // specific_report(this.report_index);
+        });
+
+        window.reports[i].marker2 = marker;
+
+        window.this_map_markers2[report.type.toUpperCase()].addMarker(marker);
+      }
+    }
+
+    function append_new_markers(start_index){
+      for (var i = start_index; i < window.reports.length; i++) {
+          var report = window.reports[i];
+
+          if(!report.lat){
+            continue;
+          }
+
+          if(report.lat == "None"){
+            continue;
+          }
+
+          try {
+            image_url = window.clusters_style[report.type.toUpperCase()][0].markerIcon;
+          } catch(ex) {
+            console.log(ex);
+            console.log("alert!!! error in render_markers image_url markers..");
+            image_url = "/img/marker-info.png";
+          }
+
+          image = {
+              url: image_url,
+              size: new google.maps.Size(27, 45),
+              origin: new google.maps.Point(0,0),
+              anchor: new google.maps.Point(12, 33)
+          };
+
+          var myLatLng = new google.maps.LatLng(parseFloat(report.lat), parseFloat(report.lng));
+
+          var marker = new google.maps.Marker({
+              position: get_final_lat_lng(myLatLng),
+              map: window.this_map,
+              icon: image,
+              title: report.content
+          });
+
+          marker.report_index = i;
+
+          google.maps.event.addListener(marker, 'click', function() {
+            specific_report(this.report_index);
+          });
+
+          /*window.oms.addListener('click', function(marker, event) {
+            specific_report(this.report_index);
+          });*/
+
+          window.reports[i].marker = marker;
+          /*window.oms.addMarker(window.reports[i].marker);*/
+
+          try {
+            window.this_map_markers[report.type.toUpperCase()].addMarker(marker);
+          }
+          catch(e) {
+            console.log(e);
+          }
+      }
+
+    }
+
+    var select_search_text = {
+      "ALL": "All Reports",
+      "FLOOD": "Flood Reports",
+      "RESCUE": "Rescue Reports",
+      "INFO": "Info Reports",
+      "BRIDGE": "Bridge Reports",
+      "EARTHQUAKE": "Earthquake Reports",
+      "EARTHQUAKE-EVACUATION-SITE": "Earthquake Evacuation Site Reports",
+      "FIRE": "Fire Reports",
+      "LANDSLIDE": "Landslide Reports",
+      "RAIN": "Rain Reports",
+      "RELIEF": "Relief Reports",
+      "STORM-SURGE": "Storm Surge Reports",
+      "VOLCANIC-ERUPTION": "Volcanic Eruption Reports"
+    }
+
+    function reports_count(){
+      var option = $("#report-list-options-2").val();
+      var option2 = $("#report-list-options").val();
+      $(".report-list-options option[value='"+ option2 +"']").html(select_search_text[option2] + " (" + window.current_report_length + ")");
+      $(".report-list-options-2 option[value='"+ option2 +"']").html(select_search_text[option2] + " (" + window.current_report_length + ")");
+    }
+
+    function render_reports_template1(i) {
+      var report_item_content = $("#report-item-template").html();
+
+
+      // add here autolinker
+      content = Autolinker.link(change_http_to_https(window.reports[i].content));
+      report_item_content = replaceAll("%%content%%", content, report_item_content);
+
+      if(window.reports[i].source){
+        report_item_content = replaceAll("%%source%%", window.reports[i].source.toLowerCase(), report_item_content);
+      }
+      else {
+        report_item_content = replaceAll("%%source%%", "none", report_item_content);
+      }
+
+      report_item_content = replaceAll("%%timestamp%%", moment.unix(window.reports[i].created).fromNow(), report_item_content);
+
+      report_item_content = replaceAll("%%icon%%", window.reports[i].icon, report_item_content);
+
+      marker_image = '<img src="/img/marker-%%type%%.png" alt="">'
+
+      if(window.reports[i].type == ""){
+        window.reports[i].type = "INFO";
+      }
+
+      marker_image = replaceAll("%%type%%", window.reports[i].type.toLowerCase(), marker_image);
+
+      if(window.reports[i].lat){
+        if(window.reports[i].lat != "None"){
+          report_item_content = replaceAll("%%marker_image%%", marker_image, report_item_content);
+        }
+        else {
+          report_item_content = replaceAll("%%marker_image%%", "", report_item_content);
+        }
+      }
+      else {
+        if (window.reports[i].type != "") {
+          report_item_content = replaceAll("%%marker_image%%", marker_image, report_item_content);
+        } else {
+          report_item_content = replaceAll("%%marker_image%%", "", report_item_content);
+        }
+      }
+
+      if(window.reports[i].replies == 1){
+        report_item_content = replaceAll("%%replies%%", window.reports[i].replies + " reply ", report_item_content);
+        report_item_content = replaceAll("%%noreply%%", "", report_item_content);
+      }
+      else if(window.reports[i].replies > 1) {
+        report_item_content = replaceAll("%%replies%%", window.reports[i].replies + " replies ", report_item_content);
+        report_item_content = replaceAll("%%noreply%%", "", report_item_content);
+      }
+      else {
+        report_item_content = replaceAll("%%replies%%", "", report_item_content);
+        report_item_content = replaceAll("%%noreply%%", "hide", report_item_content);
+      }
+
+      if(!window.reports[i].verified){
+        report_item_content = replaceAll("%%verifier_text%%", "", report_item_content);
+      }
+      else {
+        report_item_content = replaceAll("%%verifier_text%%", "Verified by " + window.reports[i].verifier, report_item_content);
+      }
+
+      report_item_content = replaceAll("%%upvote_count%%", window.reports[i].vote_ups, report_item_content);
+
+      report_item_content = replaceAll("%%type%%", window.reports[i].type.toLowerCase(), report_item_content);
+
+      if(!window.reports[i].verified){
+        report_item_content = replaceAll("%%not_verified%%", "hide", report_item_content);
+      }
+
+      if(window.reports[i].photos.length){
+        report_item_content = replaceAll("%%photo%%", '<img src="' + change_http_to_https(window.reports[i].photos[0]) + '" />', report_item_content);
+        report_item_content = replaceAll("%%photo_url%%", window.reports[i].photos[0], report_item_content);
+      }
+      else {
+        report_item_content = replaceAll("%%photo%%", '', report_item_content);
+        report_item_content = replaceAll("%%photo_url%%", window.reports[i].photos[0], report_item_content);
+      }
+
+      report_item_content = replaceAll("%%index%%", i, report_item_content);
+
+      report_item_content = replaceAll("%%content_share%%", encodeURIComponent(truncateString(window.reports[i].content, 110, ' ', '...')), report_item_content);
+
+      report_item_content = replaceAll("%%id%%", window.reports[i].id, report_item_content);
+
+      if(window.reports[i].closed){
+        report_item_content = replaceAll("%%gray%%", 'make-gray', report_item_content);
+        report_item_content = replaceAll("%%close_text%%", 'Closed', report_item_content);
+      }
+      else {
+        report_item_content = replaceAll("%%gray%%", '', report_item_content);
+        report_item_content = replaceAll("%%close_text%%", 'Close', report_item_content);
+      }
+
+
+      $("#report-list").append(report_item_content);
+    }
+
+    function render_reports_template2(i) {
+      var report_item_content_2 = $("#report-item-template-2").html();
+
+      // add here autolinker
+      content = Autolinker.link(change_http_to_https(window.reports[i].content));
+      report_item_content_2 = replaceAll("%%content%%", content, report_item_content_2);
+
+      if(window.reports[i].source){
+        report_item_content_2 = replaceAll("%%source%%", window.reports[i].source.toLowerCase(), report_item_content_2);
+      }
+      else {
+        report_item_content_2 = replaceAll("%%source%%", "none", report_item_content_2);
+      }
+
+      report_item_content_2 = replaceAll("%%timestamp%%", moment.unix(window.reports[i].created).fromNow(), report_item_content_2);
+
+      report_item_content_2 = replaceAll("%%icon%%", window.reports[i].icon, report_item_content_2);
+
+      marker_image = '<img src="/img/marker-%%type%%.png" alt="">'
+
+      if(window.reports[i].type == ""){
+        window.reports[i].type = "INFO";
+      }
+
+      marker_image = replaceAll("%%type%%", window.reports[i].type.toLowerCase(), marker_image);
+
+      if(window.reports[i].lat){
+        if(window.reports[i].lat != "None"){
+          report_item_content_2 = replaceAll("%%marker_image%%", marker_image, report_item_content_2);
+        }
+        else {
+          report_item_content_2 = replaceAll("%%marker_image%%", "", report_item_content_2);
+        }
+      }
+      else {
+        if (window.reports[i].type != "") {
+          report_item_content_2 = replaceAll("%%marker_image%%", marker_image, report_item_content_2);
+        } else {
+          report_item_content_2 = replaceAll("%%marker_image%%", "", report_item_content_2);
+        }
+      }
+
+      if(window.reports[i].replies == 1){
+        report_item_content_2 = replaceAll("%%replies%%", window.reports[i].replies + " reply ", report_item_content_2);
+        report_item_content_2 = replaceAll("%%noreply%%", "", report_item_content_2);
+      }
+      else if(window.reports[i].replies > 1) {
+        report_item_content_2 = replaceAll("%%replies%%", window.reports[i].replies + " replies ", report_item_content_2);
+        report_item_content_2 = replaceAll("%%noreply%%", "", report_item_content_2);
+      }
+      else {
+        report_item_content_2 = replaceAll("%%replies%%", "", report_item_content_2);
+        report_item_content_2 = replaceAll("%%noreply%%", "hide", report_item_content_2);
+      }
+
+      if(!window.reports[i].verified){
+        report_item_content_2 = replaceAll("%%verifier_text%%", "", report_item_content_2);
+      }
+      else {
+        report_item_content_2 = replaceAll("%%verifier_text%%", "Verified by " + window.reports[i].verifier, report_item_content_2);
+      }
+
+      report_item_content_2 = replaceAll("%%upvote_count%%", window.reports[i].vote_ups, report_item_content_2);
+
+      report_item_content_2 = replaceAll("%%type%%", window.reports[i].type.toLowerCase(), report_item_content_2);
+
+      if(!window.reports[i].verified){
+        report_item_content_2 = replaceAll("%%not_verified%%", "hide", report_item_content_2);
+      }
+
+      if(window.reports[i].photos.length){
+        report_item_content_2 = replaceAll("%%photo%%", '<span class="report-photo-thumb"><img src="' + change_http_to_https(window.reports[i].photos[0]) + '" /></span>', report_item_content_2);
+        report_item_content_2 = replaceAll("%%photo_url%%", window.reports[i].photos[0], report_item_content_2);
+      }
+      else {
+        report_item_content_2 = replaceAll("%%photo%%", '', report_item_content_2);
+        report_item_content_2 = replaceAll("%%photo_url%%", window.reports[i].photos[0], report_item_content_2);
+      }
+
+      report_item_content_2 = replaceAll("%%index%%", i, report_item_content_2);
+
+      report_item_content_2 = replaceAll("%%content_share%%", encodeURIComponent(truncateString(change_http_to_https(window.reports[i].content), 110, ' ', '...')), report_item_content_2);
+
+      report_item_content_2 = replaceAll("%%id%%", window.reports[i].id, report_item_content_2);
+
+      if(window.reports[i].closed){
+        report_item_content_2 = replaceAll("%%gray%%", 'make-gray', report_item_content_2);
+        report_item_content_2 = replaceAll("%%close_text%%", 'Closed', report_item_content_2);
+      }
+      else {
+        report_item_content_2 = replaceAll("%%gray%%", '', report_item_content_2);
+        report_item_content_2 = replaceAll("%%close_text%%", 'Close', report_item_content_2);
+      }
+
+      $("#report-list-2").append(report_item_content_2);
+    }
+
+    function render_reports_list() {
+      clear_sidebar();
+
+      window.current_report_length = 0;
+      for(i=0; i<window.reports.length; i++){
+        // if (window.bound_box_report_lists.indexOf(parseInt(window.reports[i].id)) > -1) {
+          render_reports_template1(i);
+          render_reports_template2(i);
+          window.current_report_length++;
+        // }
+      }
+      reports_count();
+
+      if ($(".gm-style-iw").length) {
+        highlight_report_item(Object.keys(window.report_lists).indexOf($("#comment_form_report_id").val()));
+      }
+    }
+
+    function append_to_reports_list(start_index){
+      // reports_count();
+
+      for(i=start_index; i<window.reports.length; i++){
+        // if (window.bound_box_report_lists.indexOf(window.reports[i].id) > -1) {
+          var report_item_content = $("#report-item-template").html();
+          report_item_content = replaceAll("%%content%%", change_http_to_https(window.reports[i].content), report_item_content);
+
+          if(window.reports[i].source){
+            report_item_content = replaceAll("%%source%%", window.reports[i].source.toLowerCase(), report_item_content);
+          }
+          else {
+            report_item_content = replaceAll("%%source%%", "none", report_item_content);
+          }
+
+          report_item_content = replaceAll("%%timestamp%%", moment.unix(window.reports[i].created).fromNow(), report_item_content);
+
+          report_item_content = replaceAll("%%icon%%", window.reports[i].icon, report_item_content);
+
+          marker_image = '<img src="/img/marker-%%type%%.png" alt="">'
+
+          if(window.reports[i].type == ""){
+            window.reports[i].type = "INFO";
+          }
+
+          marker_image = replaceAll("%%type%%", window.reports[i].type.toLowerCase(), marker_image);
+
+          if(window.reports[i].lat){
+            if(window.reports[i].lat != "None"){
+              report_item_content = replaceAll("%%marker_image%%", marker_image, report_item_content);
+            }
+            else {
+              report_item_content = replaceAll("%%marker_image%%", "", report_item_content);
+            }
+          }
+          else {
+            report_item_content = replaceAll("%%marker_image%%", "", report_item_content);
+          }
+
+          if(window.reports[i].replies == 1){
+            report_item_content = replaceAll("%%replies%%", window.reports[i].replies + " reply ", report_item_content);
+            report_item_content = replaceAll("%%noreply%%", "", report_item_content);
+          }
+          else if(window.reports[i].replies > 1) {
+            report_item_content = replaceAll("%%replies%%", window.reports[i].replies + " replies ", report_item_content);
+            report_item_content = replaceAll("%%noreply%%", "", report_item_content);
+          }
+          else {
+            report_item_content = replaceAll("%%replies%%", "", report_item_content);
+            report_item_content = replaceAll("%%noreply%%", "hide", report_item_content);
+          }
+
+          if(!window.reports[i].verified){
+            report_item_content = replaceAll("%%verifier_text%%", "", report_item_content);
+          }
+          else {
+            report_item_content = replaceAll("%%verifier_text%%", "Verified by " + window.reports[i].verifier, report_item_content);
+          }
+
+          report_item_content = replaceAll("%%upvote_count%%", window.reports[i].vote_ups, report_item_content);
+
+          report_item_content = replaceAll("%%type%%", window.reports[i].type.toLowerCase(), report_item_content);
+
+          if(!window.reports[i].verified){
+            report_item_content = replaceAll("%%not_verified%%", "hide", report_item_content);
+          }
+
+          if(window.reports[i].photos.length){
+            report_item_content = replaceAll("%%photo%%", '<span class="report-photo-thumb"><img src="' + change_http_to_https(window.reports[i].photos[0]) + '" /></span>', report_item_content);
+            report_item_content = replaceAll("%%photo_url%%", window.reports[i].photos[0], report_item_content);
+          }
+          else {
+            report_item_content = replaceAll("%%photo%%", '', report_item_content);
+            report_item_content = replaceAll("%%photo_url%%", window.reports[i].photos[0], report_item_content);
+          }
+
+          report_item_content = replaceAll("%%index%%", i, report_item_content);
+          report_item_content = replaceAll("%%content_share%%", encodeURIComponent(truncateString(change_http_to_https(window.reports[i].content), 110, ' ', '...')), report_item_content);
+          report_item_content = replaceAll("%%id%%", window.reports[i].id, report_item_content);
+
+          if(window.reports[i].closed){
+            report_item_content = replaceAll("%%gray%%", 'make-gray', report_item_content);
+            report_item_content = replaceAll("%%close_text%%", 'Closed', report_item_content);
+          }
+          else {
+            report_item_content = replaceAll("%%gray%%", '', report_item_content);
+            report_item_content = replaceAll("%%close_text%%", 'Close', report_item_content);
+          }
+
+          $("#report-list").append(report_item_content);
+        // }
+      }
+    }
+
+
+    function clear_map(){
+      remove_markers();
+      window.reports = [];
+    }
+
+
+    function clear_sidebar(){
+      $("#report-list").empty();
+      $("#report-list-2").empty();
+    }
+
+
+    function clear_all(){
+      close_all_info_windows();
+      clear_sidebar();
+      clear_map();
+      clear_all_selected_variables();
+    }
+
+
+    function clear_all_selected_variables(){
+      window.selected_sidebar = null;
+      window.selected_report = null;
+      window.current_marker = null;
+    }
+
+    function fetch_reports(){
+      report_type = window.current_report_type;
+      sort = window.current_report_sort;
+      verified = window.current_report_verified;
+
+      var url = "/api/v1/reports?expand=owner";
+
+      
+
+      console.log(url);
+      
+      url += "&filter_info_type=" + report_type;
+      
+      if(sort == 'DATE_DOWN'){
+        url += "&sort_created=desc";
+      }
+      if(sort == 'DATE_UP'){
+        url += "&sort_created=asc";
+      }
+
+      if(verified == 'VERIFIED'){
+        url += "&filter_verified=true";
+      }
+      if(verified == 'UNVERIFIED'){
+        url += "&filter_verified=false";
+      }
+
+      if(window.current_tags_string){
+        url += "&tags=" + window.current_tags_string;
+      }
+
+      var check = false;
+
+      $.getJSON( url, function(response) {
+        var data = response.data;
+        var links = response.links;
+
+        if(window.initial){
+          window.initial = false;
+          check = true;
+        }
+        else {
+          clear_all();
+        }
+
+        var icon = "laptop";
+        var temp;
+
+        for(i=0; i<data.length; i++){
+          var content = data[i].attributes.remark.toLowerCase();
+          
+          if (content.includes("[twitter]")) {
+              icon = "twitter";
+          }
+          else if (content.includes("[sms]")) {
+              icon = "phone";
+          }
+          else {
+            icon = "laptop";
+          }
+
+          if(check){
+            if(window.reports.length){
+              if(window.reports[0].id == data[i].id){
+                continue;
+              }
+            }
+          }
+
+          var temp = {
+            "id": data[i].id,
+            "content": data[i].attributes.remark,
+            "created": moment.utc(data[i].attributes.created_at).unix(),
+            "current_user_vote": 0,
+            "key": "",
+            "lat": data[i].attributes.latitude,
+            "lng": data[i].attributes.longitude,
+            "location": data[i].attributes.address,
+            "owner": {
+              "name": data[i].attributes.reporter.full_name
+            },
+            "edited_by": "",
+            "closed_by": "",
+            "name": data[i].attributes.reporter.full_name,
+            "photos": data[i].attributes.image_url ? [data[i].attributes.image_url] : [],
+            "responded": false,
+            "responder": null,
+            "source": null,
+            "special_report": false,
+            "type": String(data[i].attributes.incident_keyword.name).replace(" ","-"),
+            "verified": data[i].attributes.state == "verified"? true : false,
+            "verifier": "",
+            "vote_ups": 0,
+            "replies": data[i].relationships.comments.data.length,
+            "voted": "",
+            "icon": icon,
+            "closed": data[i].closed
+          };
+          window.reports.push(temp);
+          window.report_lists[data[i].id] = temp;
+        }
+
+
+        if(data.next_page){
+          fetch_next_reports(data.next_page);
+        }
+        else {
+          MapSwitcher();
+          // Fetch comments of reports
+          fetch_all_comments();
+          
+        }
+      });
+    }
+
+    function fetch_next_reports(next_page){
+      var url = next_page;
+      var last_index = window.reports.length;
+        console.log(last_index);
+      if(last_index >= 500) {
+          MapSwitcher();
+          fetch_with_location_reports();
+      }
+      else {
+          $.getJSON(url, function (data) {
+              console.log(data);
+
+              var twitter = ["tweet", "twitter"];
+              var sms = ["sms", "text", "mobile", "phone", "chikka"];
+              var computer = ["web", "computer", "laptop"];
+              var icon = "laptop";
+              var temp;
+
+              for (i = 0; i < data.contents.length; i++) {
+                  if (data.contents[i].source) {
+                      if (twitter.indexOf(data.contents[i].source.toLowerCase()) > -1) {
+                          icon = "twitter";
+                      }
+                      else if (sms.indexOf(data.contents[i].source.toLowerCase()) > -1) {
+                          icon = "phone";
+                      }
+                  }
+
+                  temp = {
+                      "id": data.contents[i].id,
+                      "content": data.contents[i].content,
+                      "created": data.contents[i].created,
+                      "current_user_vote": data.contents[i].current_user_vote,
+                      "key": data.contents[i].key,
+                      "lat": data.contents[i].lat,
+                      "lng": data.contents[i].lng,
+                      "location": data.contents[i].location,
+                      "owner": data.contents[i].owner,
+                      "edited_by": data.contents[i].edited_by,
+                      "closed_by": data.contents[i].closed_by,
+                      "name": data.contents[i].name,
+                      "photos": data.contents[i].photos,
+                      "responded": data.contents[i].responded,
+                      "responder": data.contents[i].responder,
+                      "source": data.contents[i].source,
+                      "special_report": data.contents[i].special_report,
+                      "type": data.contents[i].type,
+                      "verified": data.contents[i].verified,
+                      "verifier": data.contents[i].verifier,
+                      "vote_ups": data.contents[i].vote_ups,
+                      "replies": data.contents[i].replies,
+                      "voted": data.contents[i].current_user_vote,
+                      "icon": icon,
+                      "closed": data.contents[i].closed
+                  };
+                  window.reports.push(temp);
+                  window.report_lists[data.contents[i].id] = temp;
+              }
+
+              append_reports(last_index);
+              if (data.next_page) {
+                  // check if sort is by time desc and if the reports are older than 12 hours. if older than 12, don't show.
+
+                  if (window.current_report_sort == 'DATE_DOWN') {
+                      var oldest_date = moment.unix(data.contents[data.contents.length - 1].created).toDate();
+                      var now = new Date();
+                      var hours = Math.abs(now - oldest_date) / 36e5;
+                      var limit = 12;
+
+                      console.log("HOURS", hours);
+                      // 744 = 31 days
+                      if(window.current_tags_string){
+                          limit = 744;
+                      }
+
+                      if (hours > limit) {
+                          MapSwitcher();
+                          fetch_with_location_reports();
+                      }
+                      else {
+                          fetch_next_reports(data.next_page);
+                      }
+                  }
+                  else {
+                      fetch_next_reports(data.next_page);
+                  }
+              }
+              else {
+                  MapSwitcher();
+                  fetch_with_location_reports();
+                  /*fetch_all_comments();*/
+              }
+          });
+      }
+    }
+
+    
+
+
+    function fetch_with_location_reports(){
+      report_type = window.current_report_type;
+      sort = window.current_report_sort;
+      verified = window.current_report_verified;
+
+      var url = "/api/v1/reports?expand=owner,edited_by,closed_by";
+
+      
+
+      if (report_type != "ALL") {
+        url += "&filter_info_type=" + report_type;
+      }
+
+      if(sort == 'HOT_DOWN'){
+        url += "&sort_vote_ups=desc";
+      }
+      if(sort == 'HOT_UP'){
+        url += "&sort_vote_ups=asc";
+      }
+      if(sort == 'DATE_DOWN'){
+        url += "&sort_created=desc";
+      }
+      if(sort == 'DATE_UP'){
+        url += "&sort_created=asc";
+      }
+
+      if(verified == 'VERIFIED'){
+        url += "&filter_verified=true";
+      }
+      if(verified == 'UNVERIFIED'){
+        url += "&filter_verified=false";
+      }
+
+      url += "&filter_filter_tags=HAS_LATLNG->TRUE";
+
+
+      if(window.current_tags_string){
+        url += "&tags=" + window.current_tags_string;
+      }
+
+      $.getJSON( url, function(data) {
+        console.log(data);
+
+        var twitter = ["tweet","twitter"];
+        var sms = ["sms","text","mobile","phone","chikka"];
+        var computer = ["web","computer", "laptop"];
+        var icon = "laptop";
+
+        for(i=0; i<data.contents.length; i++){
+          if(data.contents[i].source){
+            if(twitter.indexOf(data.contents[i].source.toLowerCase()) > -1){
+              icon = "twitter";
+            }
+            else if(sms.indexOf(data.contents[i].source.toLowerCase()) > -1){
+              icon = "phone";
+            }
+          }
+
+          var temp = {
+            "id": data.contents[i].id,
+            "content": data.contents[i].content,
+            "created": data.contents[i].created,
+            "current_user_vote": data.contents[i].current_user_vote,
+            "key": data.contents[i].key,
+            "lat": data.contents[i].lat,
+            "lng": data.contents[i].lng,
+            "location": data.contents[i].location,
+            "owner": data.contents[i].owner,
+            "edited_by": data.contents[i].edited_by,
+            "closed_by": data.contents[i].closed_by,
+            "name": data.contents[i].name,
+            "photos": data.contents[i].photos,
+            "responded": data.contents[i].responded,
+            "responder": data.contents[i].responder,
+            "source": data.contents[i].source,
+            "special_report": data.contents[i].special_report,
+            "type": data.contents[i].type,
+            "verified": data.contents[i].verified,
+            "verifier": data.contents[i].verifier,
+            "vote_ups": data.contents[i].vote_ups,
+            "replies": data.contents[i].replies,
+            "voted": data.contents[i].current_user_vote,
+            "icon": icon,
+            "closed": data.contents[i].closed
+          };
+          window.reports.push(temp);
+          window.report_lists[data.contents[i].id] = temp;
+        }
+        render_markers();
+
+      });
+
+    }
+
+    function render_reports(first){
+      
+      render_reports_list();
+      render_markers();
+
+      if(first){
+        specific_report(0);
+      }
+    }
+
+    function append_reports(start_index){
+      
+      append_to_reports_list(start_index);
+      append_new_markers(start_index);
+    }
+
+
+    function add_report(report){
+      if(window.reports && window.reports.length){
+      }
+      else {
+        window.reports = [];
+      }
+      var twitter = ["tweet","twitter"];
+      var sms = ["sms","text","mobile","phone","chikka"];
+      var computer = ["web","computer", "laptop"];
+      var icon = "laptop";
+
+      if(report.source){
+        if(twitter.indexOf(report.source.toLowerCase()) > -1){
+          icon = "twitter";
+        }
+        else if(sms.indexOf(report.source.toLowerCase()) > -1){
+          icon = "phone";
+        }
+      }
+
+      window.reports.unshift({
+        "id": report.id,
+        "content": report.content,
+        "created": report.created,
+        "current_user_vote": report.current_user_vote,
+        "key": report.key,
+        "lat": report.lat,
+        "lng": report.lng,
+        "location": report.location,
+        "owner": report.owner,
+        "name": report.name,
+        "photos": report.photos,
+        "responded": report.responded,
+        "responder": report.responder,
+        "source": report.source,
+        "special_report": report.special_report,
+        "type": report.type,
+        "verified": report.verified,
+        "verifier": report.verifier,
+        "vote_ups": report.vote_ups,
+        "replies": report.replies,
+        "voted": report.current_user_vote,
+        "icon": icon,
+        "closed": false
+      });
+
+      window.report_lists[report.id] = window.reports[0];
+
+      window.selected_report = 0;
+      first = true;
+      MapSwitcher();
+    }
+
+    window.bound_box_dataset_lists = [];
+    window.opened_datasets = [];
+    window.datasets = new Object();
+    
+
+    
+
+    function fetch_data(){
+      
+
+      $.getJSON( "/api/v1/data" + (window.current_tags_string ? "?tags=" + window.current_tags_string:""), function(data) {
+        console.log(data);
+        for(i=0; i<data.contents.length; i++){
+          window.datasets[data.contents[i].id] = {
+            "id": data.contents[i].id,
+            "created": data.contents[i].created,
+            "key": data.contents[i].key,
+            "owner": data.contents[i].owner,
+            "source": data.contents[i].source,
+            "title": data.contents[i].title,
+            "icon": data.contents[i].file_icon_full,
+            "file_source_full": data.contents[i].file_source_full,
+            "lat": data.contents[i].lat,
+            "lng": data.contents[i].lng,
+            "localize_option": data.contents[i].localize_option
+          };
+        }
+
+        render_data_options();
+        DatasetsMapSwitcher();
+      });
+
+      
+    }
+
+
+
+    function get_datasets_in_square(sw, ne, zoom) {
+      try {
+        _data = {"sw_lat": sw.lat(), "sw_lng": sw.lng(), "ne_lat": ne.lat(), "ne_lng": ne.lng(), "zoom": zoom};
+        if (window.current_tags_string) {
+          _data["tags"] = window.current_tags_string;
+        }
+        $.ajax({
+          type: "POST",
+          contentType: "application/json",
+          dataType: 'json',
+          url: "/api/v3/geo_dataset_server",
+          data: _data,
+          success: function(response) {
+            var added_dataset_id = [];
+            for (dataset in response.datasets) {
+              if (window.bound_box_dataset_lists.indexOf(response.datasets[dataset]) < 0) {
+                  added_dataset_id.push(response.datasets[dataset]);
+              }
+            }
+
+            window.bound_box_dataset_lists = response.datasets;
+
+            // remove ids not in datasets
+            var new_datasets = []
+            for (index in added_dataset_id) {
+              console.log(index);
+              if (window.datasets[added_dataset_id[index]] != undefined) {
+                  new_datasets.push(added_dataset_id[index]);
+              }
+            }
+
+            added_dataset_id = new_datasets;
+
+            render_data_options();
+
+            if (added_dataset_id.length > 0) {
+              datasets_notification(added_dataset_id);
+            }
+          },
+          error: function(err) {
+            console.log(err);
+          }
+        });
+      } catch(e) {
+        console.log(e);
+        render_data_options();
+      }
+    }
+
+    function datasets_notification(ids) {
+      var noti_html = null;
+      if (ids.length > 1) {
+        noti_html = $("<div>", {'class': 'notify-dataset' , 'data-id': ids}).append("Multiple datasets added.");
+      } else {
+        noti_html = $("<div>", {'class': 'notify-dataset', 'data-id': ids}).append("New datasets added. <br />" + window.datasets[ids[0]].title);
+      }
+
+      $.notify({
+          datasetContainer: noti_html,
+        },
+        {
+          position:"bottom left",
+          style: 'bootstrap',
+          className: '',
+          autoHide: true
+        }
+      );
+    }
+
+    $(document).on("click", ".notify-dataset", function() {
+      ids = $(this).attr("data-id").split(",");
+      for (id in ids) {
+        $(".dynamic-switch-" + ids[id]).switchButton({ checked: true });
+      }
+    });
+
+    // Fetch Comments coming from eBayanihan API
+    function fetch_all_comments(){
+      for(i=0; i<window.reports.length; i++){
+        fetch_comments(i);
+      }
+    }
+
+
+    function fetch_comments(report_index){
+      try {
+        var new_report_index = report_index;
+        var id = window.reports[new_report_index].id;
+        $.getJSON( "/api/v1/ebayanihan/comments?report_id=" + id, function(result) {
+          var data = result.contents;
+          window.reports[new_report_index].comments = [];
+          for(i=0; i<data.length; i++){
+            if(data[i].attributes.comment){
+                comments = {
+                "created": moment.utc(data[i].attributes.created_at).unix(), 
+                "content": data[i].attributes.comment,
+                "owner":{
+                  "name": data[i].attributes.user.full_name
+                }
+              };
+              window.reports[new_report_index].comments.push(comments);
+            }
+          }
+        });
+      } catch(ex) {
+        console.log(ex);
+      }
+    }
+
+
+
+
+    function upvote(report_index){
+      if(window.reports[report_index].voted == 1){
+        console.log("Voted already");
+        return;
+      }
+      window.reports[report_index].voted = 1;
+
+      var id = window.reports[report_index].id;
+      var new_report_index = report_index;
+
+      $.ajax({
+        url: '/api/v1/reports/' + id + '/vote/up',
+        type: 'PUT',
+        success: function(data) {
+
+          counter = $('#up-count2-' + new_report_index).text();
+
+          console.log(counter);
+          var total = parseInt(counter) + 1;
+          $('#up-count-' + new_report_index).html(total);
+          $('#up-count2-' + new_report_index).html(total);
+          window.reports[new_report_index].vote_ups = total;
+        },
+        error: function(request, status, error) {
+          console.log(request.responseText);
+          window.reports[report_index].voted = 0;
+        }
+      });
+    }
+
+    function flag_report(report_index){
+      if(window.reports[report_index].flagged == 1){
+        console.log("Flagged already");
+        return;
+      }
+      window.reports[report_index].flagged = 1;
+
+      var id = window.reports[report_index].id;
+      var new_report_index = report_index;
+
+      $.ajax({
+        url: '/api/v1/reports/' + id + '/vote/down',
+        type: 'PUT',
+        success: function(data) {
+            console.log('success in flagging');
+            window.reports.splice(report_index, 1);
+            render_reports();
+        },
+        error: function(request, status, error) {
+          console.log(request.responseText);
+          window.reports[report_index].flagged = 0;
+        }
+      });
+    }
+
+
+    function close_report(report_index){
+      if(window.reports[report_index].closed == true){
+        console.log("closed already");
+        return;
+      }
+      window.reports[report_index].closed = true;
+
+      var id = window.reports[report_index].id;
+      var new_report_index = report_index;
+
+      $.ajax({
+        url: '/api/v1/reports/' + id + '/close',
+        type: 'PUT',
+        success: function(data) {
+            console.log('success in closing');
+            window.reports[report_index].closed = true;
+            render_reports();
+        },
+        error: function(request, status, error) {
+          console.log(request.responseText);
+          window.reports[report_index].closed = false;
+        }
+      });
+    }
+
+
+    function toggle_verify_report(verified, verifier, report_index){
+      window.reports[report_index].verified = verified;
+      window.reports[report_index].verifier = verifier;
+      if(verified){
+        $("#specific_report_item_" + report_index + " .verified").removeClass("hide");
+        $("#specific_report_item_" + report_index + " .verified img").attr("title", "Verified by " + verifier);
+
+        
+        $("#verify_info_window").removeClass("hide");
+        $("#verify_info_window img").attr("title", "Verified by " + verifier);
+        
+      }
+      else {
+        $("#specific_report_item_" + report_index + " .verified").addClass("hide");
+        $("#specific_report_item_" + report_index + " .verified img").attr("title", "Not Verified");
+
+        
+        $("#verify_info_window").addClass("hide");
+        $("#verify_info_window img").attr("title", "");
+        
+      }
+    }
+
+
+    window.verifying = false;
+
+    function toggle_verify(report_index){
+      if(window.verifying){
+        return
+      }
+      window.verifying = true;
+
+      var id = window.reports[report_index].id;
+      var new_report_index = report_index;
+
+      $.ajax({
+        url: '/api/v1/reports/' + id + '/verify',
+        type: 'PUT',
+        success: function(data) {
+          console.log(data);
+          data = $.parseJSON(data);
+          toggle_verify_report(data.content.verified, data.content.verifier, new_report_index);
+          window.verifying = false;
+        },
+        error: function(request, status, error) {
+          console.log(request.responseText);
+          window.verifying = false;
+        }
+      });
+    }
+
+
+    function get_address_from_lat_lng(lat, lng) {
+        var lat = parseFloat(lat);
+        var lng = parseFloat(lng);
+        var latlng = new google.maps.LatLng(lat, lng);
+        geocoder = new google.maps.Geocoder();
+        geocoder.geocode({'latLng': latlng}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                console.log(results);
+                console.log(results[0].formatted_address);
+                if (results[0]) {
+                    $("#current_geocoded_location").html(results[0].formatted_address);
+                    $("#current_geocoded_location_input").val(results[0].formatted_address);
+                }
+                if(results.length > 1) {
+                  if(results[1]){
+                    $("#current_geocoded_location2_input").val(results[1].formatted_address);
+                  }
+                }
+            } else {
+                console.log("Geocoder failed due to: " + status);
+            }
+        });
+    }
+
+
+    function render_comments(report_index){
+      var comments = window.reports[report_index].comments;
+      if(!comments){
+        return "";
+      }
+
+      var comment_string = "";
+
+      for(i=0; i<comments.length; i++){
+        if(comments[i].content){
+          var comment_item = $("#single-comment-template").html();
+          comment_item = replaceAll("%%owner%%", comments[i].owner.name, comment_item);
+          comment_item = replaceAll("%%timestamp%%", moment.unix(comments[i].created).fromNow(), comment_item);
+          comment_item = replaceAll("%%content%%", change_http_to_https(comments[i].content), comment_item);
+
+          if(comments[i].owner.official){
+            comment_item = replaceAll("%%official%%", "text-primary", comment_item);
+            comment_item = replaceAll("%%official-verified%%", '<img src="/img/ico-official.svg" class="official-user" title="Verified" alt="Verified">', comment_item);
+          }
+          else {
+            comment_item = replaceAll("%%official%%", "", comment_item);
+            comment_item = replaceAll("%%official-verified%%", '', comment_item);
+          }
+
+          comment_string += comment_item;
+        }
+      }
+
+      return comment_string;
+    }
+
+
+    function render_data_options2(){
+      // var switcher3 = 0;
+      var switcher_list = {};
+      $(".cb-container-t").remove();
+
+      for (index in window.datasets) {
+        var dataset_item = $("#dataset-menu-template").html();
+        dataset_item = replaceAll("%%id%%", window.datasets[index].id, dataset_item);
+        dataset_item = replaceAll("%%title%%", window.datasets[index].title, dataset_item);
+
+        $("#datasets-list").append(dataset_item);
+        $("#datasets-list-2").append(dataset_item);
+      }
+
+      $(".cb-container input.normal").unbind('change');
+
+      $('.cb-container input.normal').switchButton({
+          checked: false,
+          show_labels: false
+      }).change(function(){
+        if(switcher_list["dynamic-switch-" + $(this).attr("id")] == 0 || switcher_list["dynamic-switch-" + $(this).attr("id")] == undefined) {
+          cb = $(this).prop("checked");
+          parent_li = $(this).parent(".flip-switch");
+          content = parent_li.next("span").text();
+
+          if(cb){
+            render_kml($(this).val());
+          }
+          else {
+            unrender_kml($(this).val());
+          }
+
+          switcher_list["dynamic-switch-" + $(this).attr("id")] = $(".cb-container input.dynamic-switch-" + $(this).attr("id")).length - 1;
+          // switcher3 = $(".cb-container input.dynamic-switch-" + $(this).attr("id")).length - 1;
+
+          $(".cb-container input.dynamic-switch-" + $(this).attr("id")).switchButton({ checked: cb });
+        } else {
+          switcher_list["dynamic-switch-" + $(this).attr("id")]--;
+          // switcher3++;
+        }
+      });
+    }
+
+    var switcher_list = {};
+    function switchButton(id) {
+      $("."+ id +" input.normal").unbind('change');
+
+      $('.'+ id +' input.normal').switchButton({
+          checked: window.opened_datasets.indexOf(parseInt(id)) > -1,
+          show_labels: false
+      }).change(function(){
+        if(switcher_list["dynamic-switch-" + $(this).attr("id")] == 0 || switcher_list["dynamic-switch-" + $(this).attr("id")] == undefined) {
+          cb = $(this).prop("checked");
+          parent_li = $(this).parent(".flip-switch");
+          content = parent_li.next("span").text();
+
+          if(cb){
+            render_kml($(this).val());
+          }
+          else {
+            unrender_kml($(this).val());
+          }
+
+          switcher_list["dynamic-switch-" + $(this).attr("id")] = $(".cb-container input.dynamic-switch-" + $(this).attr("id")).length - 1;
+          // switcher3 = $(".cb-container input.dynamic-switch-" + $(this).attr("id")).length - 1;
+
+          $(".cb-container input.dynamic-switch-" + $(this).attr("id")).switchButton({ checked: cb });
+        } else {
+          switcher_list["dynamic-switch-" + $(this).attr("id")]--;
+          // switcher3++;
+        }
+      });
+    }
+
+    function render_data_options(){
+      $(".cb-container-t").hide();
+
+      for (dataset_id in window.datasets) {
+        dataset_id = parseInt(dataset_id);
+        // if(window.bound_box_dataset_lists.indexOf(dataset_id) > -1 || ((window.datasets[dataset_id].localize_option == "Global") || !window.datasets[dataset_id].lat && !window.datasets[dataset_id].lng)) {
+          var dataset_item = $("#dataset-menu-template").html();
+          dataset_item = replaceAll("%%id%%", window.datasets[dataset_id].id, dataset_item);
+          dataset_item = replaceAll("%%title%%", window.datasets[dataset_id].title, dataset_item);
+          if ($("." + window.datasets[dataset_id].id).length == 0) {
+            $("#datasets-list").append(dataset_item);
+            $("#datasets-list-2").append(dataset_item);
+            switchButton(window.datasets[dataset_id].id);
+          }
+          $("." + window.datasets[dataset_id].id).attr("class", "cb-container "+ window.datasets[dataset_id].id +" cb-container-u");
+        // }
+      }
+
+      $(".cb-container-u").show();
+      $(".cb-container-t").remove();
+      $(".cb-container-u").addClass("cb-container-t");
+      $(".cb-container-u").removeClass("cb-container-u");
+    }
+
+
+    function render_kml(dataset_id){
+      if(window.opened_datasets.indexOf(parseInt(dataset_id)) < 0) {
+        window.opened_datasets.push(parseInt(dataset_id));
+      }
+
+      console.log(dataset_id);
+      try {
+        window.datasets[dataset_id].layer.setMap(null);
+        window.datasets[dataset_id].layer2.setMap(null);
+      } catch(e) {
+        console.log(e);
+      }
+      window.datasets[dataset_id].layer = new google.maps.KmlLayer({
+        url: window.datasets[dataset_id].file_source_full
+      });
+
+      window.datasets[dataset_id].layer2 = new google.maps.KmlLayer({
+        url: window.datasets[dataset_id].file_source_full
+      });
+
+      window.datasets[dataset_id].layer.setMap(window.this_map);
+      window.datasets[dataset_id].layer2.setMap(window.this_map2);
+    }
+
+
+    function unrender_kml(dataset_id){
+      try {
+        window.opened_datasets.splice(window.opened_datasets.indexOf(parseInt(dataset_id)), 1);
+      } catch(ex) {
+        console.log(ex);
+      }
+      console.log(dataset_id);
+      window.datasets[dataset_id].layer.setMap(null);
+      window.datasets[dataset_id].layer2.setMap(null);
+    }
+
+    function render_fusion(){
+      console.log('render fusion...');
+      window.fusion_map_layer = new google.maps.FusionTablesLayer({
+        map: window.this_map,
+        heatmap: { enabled: false },
+        query: {
+          select: "col0",
+          from: "12zGjdyvDfWas_fpUnkW6oo-bj1shx9u3faqKrszd",
+          where: "col4 in (\x27High\x27, \x27Low to Moderate\x27)"
+        },
+        options: {
+          styleId: 2,
+          templateId: 2
+        }
+      });
+      window.fusion2_map_layer = new google.maps.FusionTablesLayer({
+        map: window.this_map2,
+        heatmap: { enabled: false },
+        query: {
+          select: "col0",
+          from: "12zGjdyvDfWas_fpUnkW6oo-bj1shx9u3faqKrszd",
+          where: "col4 in (\x27High\x27, \x27Low to Moderate\x27)"
+        },
+        options: {
+          styleId: 2,
+          templateId: 2
+        }
+      });
+    }
+
+    function unrender_fusion(){
+      window.fusion_map_layer.setMap(null);
+      window.fusion2_map_layer.setMap(null);
+    }
+
+
+    function render_fusion2(){
+      console.log('render fusion2...');
+      window.fusion_map_layer2 = new google.maps.FusionTablesLayer({
+        map: window.this_map,
+        heatmap: { enabled: false },
+        query: {
+          select: "col4",
+          from: "1lW5bYab8xaifuXIbHlHTINgtQinNotF-naksjfb0",
+          where: ""
+        },
+        options: {
+          styleId: 2,
+          templateId: 2
+        }
+      });
+
+      window.fusion2_map_layer2 = new google.maps.FusionTablesLayer({
+        map: window.this_map2,
+        heatmap: { enabled: false },
+        query: {
+          select: "col4",
+          from: "1lW5bYab8xaifuXIbHlHTINgtQinNotF-naksjfb0",
+          where: ""
+        },
+        options: {
+          styleId: 2,
+          templateId: 2
+        }
+      });
+    }
+
+    function unrender_fusion2(){
+      window.fusion_map_layer2.setMap(null);
+      window.fusion2_map_layer2.setMap(null);
+    }
+
+
+    function render_fusion3(){
+      console.log('render fusion3...');
+      window.fusion_map_layer3 = new google.maps.FusionTablesLayer({
+        map: window.this_map,
+        heatmap: { enabled: false },
+        query: {
+          select: "col6",
+          from: "1XrYx_RdAkXuaf1-3DAwb0ydtAppfwDkOqKaBmcMz",
+          where: ""
+        },
+        options: {
+          styleId: 2,
+          templateId: 2
+        }
+      });
+
+      window.fusion2_map_layer3 = new google.maps.FusionTablesLayer({
+        map: window.this_map2,
+        heatmap: { enabled: false },
+        query: {
+          select: "col6",
+          from: "1XrYx_RdAkXuaf1-3DAwb0ydtAppfwDkOqKaBmcMz",
+          where: ""
+        },
+        options: {
+          styleId: 2,
+          templateId: 2
+        }
+      });
+    }
+
+    function unrender_fusion3(){
+      window.fusion_map_layer3.setMap(null);
+      window.fusion2_map_layer3.setMap(null);
+    }
+
+    function render_fusion4(){
+      console.log('render fusion4...');
+      window.fusion_map_layer4 = new google.maps.FusionTablesLayer({
+        map: window.this_map,
+        heatmap: { enabled: false },
+        query: {
+          select: "col4",
+          from: "1lW5bYab8xaifuXIbHlHTINgtQinNotF-naksjfb0",
+          where: ""
+        },
+        options: {
+          styleId: 2,
+          templateId: 2
+        }
+      });
+
+      window.fusion2_map_layer4 = new google.maps.FusionTablesLayer({
+        map: window.this_map2,
+        heatmap: { enabled: false },
+        query: {
+          select: "col4",
+          from: "1lW5bYab8xaifuXIbHlHTINgtQinNotF-naksjfb0",
+          where: ""
+        },
+        options: {
+          styleId: 2,
+          templateId: 2
+        }
+      });
+    }
+
+    function unrender_fusion4(){
+      window.fusion_map_layer4.setMap(null);
+      window.fusion2_map_layer4.setMap(null);
+    }
+
+    function render_fusion5(){
+      console.log('render fusion5...');
+      window.fusion_map_layer5 = new google.maps.FusionTablesLayer({
+        map: window.this_map,
+        heatmap: { enabled: false },
+        query: {
+          select: "col7",
+          from: "1j-qmdlwkiIXlPljxdolTu5BurEo4adHnf6CHAsU2",
+          where: ""
+        },
+        options: {
+          styleId: 2,
+          templateId: 2
+        }
+      });
+
+      window.fusion2_map_layer5 = new google.maps.FusionTablesLayer({
+        map: window.this_map2,
+        heatmap: { enabled: false },
+        query: {
+          select: "col7",
+          from: "1j-qmdlwkiIXlPljxdolTu5BurEo4adHnf6CHAsU2",
+          where: ""
+        },
+        options: {
+          styleId: 2,
+          templateId: 2
+        }
+      });
+    }
+
+    function unrender_fusion5(){
+      window.fusion_map_layer5.setMap(null);
+      window.fusion2_map_layer5.setMap(null);
+    }
+
+    function render_fusion6(){
+      console.log('render fusion6...');
+      window.fusion_map_layer6 = new google.maps.FusionTablesLayer({
+        map: window.this_map,
+        heatmap: { enabled: false },
+        query: {
+          select: "col6",
+          from: "1yYyjQHv1FZV-xxzVYFaTdfCGu2eqvbbUmfRLFzbt",
+          where: ""
+        },
+        options: {
+          styleId: 2,
+          templateId: 2
+        }
+      });
+
+      window.fusion2_map_layer6 = new google.maps.FusionTablesLayer({
+        map: window.this_map2,
+        heatmap: { enabled: false },
+        query: {
+          select: "col6",
+          from: "1yYyjQHv1FZV-xxzVYFaTdfCGu2eqvbbUmfRLFzbt",
+          where: ""
+        },
+        options: {
+          styleId: 2,
+          templateId: 2
+        }
+      });
+    }
+
+    function unrender_fusion6(){
+      window.fusion_map_layer6.setMap(null);
+      window.fusion2_map_layer6.setMap(null);
+    }
+    </script>
+
+    <script type="text/javascript">
+      $(document).ready(function(){
+        var switcher1 = 0;
+        var switcher2 = 0;
+        var switcher3 = 0;
+        var switcher4 = 0;
+        var switcher5 = 0;
+        var switcher6 = 0;
+
+        $('.data-fusion').switchButton({
+            checked: false,
+            show_labels: false
+        }).change(function(){
+          if (switcher1 == 0) {
+            cb = $(this).prop("checked");
+            parent_li = $(this).parent(".flip-switch");
+            content = parent_li.next("span").text();
+
+            if(cb){
+              render_fusion();
+            }
+            else {
+              unrender_fusion();
+            }
+
+            switcher1 = $(".data-fusion").length - 1;
+
+            $('.data-fusion').switchButton({ checked: cb });
+          } else {
+            switcher1--;
+          }
+        });
+
+        $('.data-fusion2').switchButton({
+            checked: false,
+            show_labels: false
+        }).change(function(){
+          if (switcher2 == 0) {
+            cb = $(this).prop("checked");
+            parent_li = $(this).parent(".flip-switch");
+            content = parent_li.next("span").text();
+
+            if(cb){
+              render_fusion2();
+            }
+            else {
+              unrender_fusion2();
+            }
+
+            switcher2 = $(".data-fusion2").length - 1;
+
+            $('.data-fusion2').switchButton({ checked: cb });
+          } else {
+            switcher2--;
+          }
+        });
+
+        $('.data-fusion3').switchButton({
+            checked: false,
+            show_labels: false
+        }).change(function(){
+          if (switcher3 == 0) {
+            cb = $(this).prop("checked");
+            parent_li = $(this).parent(".flip-switch");
+            content = parent_li.next("span").text();
+
+            if(cb){
+              render_fusion3();
+            }
+            else {
+              unrender_fusion3();
+            }
+
+            switcher3 = $(".data-fusion3").length - 1;
+
+            $('.data-fusion3').switchButton({ checked: cb });
+          } else {
+            switcher3--;
+          }
+        });
+
+        $('.data-fusion4').switchButton({
+            checked: false,
+            show_labels: false
+        }).change(function(){
+          if (switcher4 == 0) {
+            cb = $(this).prop("checked");
+            parent_li = $(this).parent(".flip-switch");
+            content = parent_li.next("span").text();
+
+            if(cb){
+              render_fusion4();
+            }
+            else {
+              unrender_fusion4();
+            }
+
+            switcher4 = $(".data-fusion4").length - 1;
+
+            $('.data-fusion4').switchButton({ checked: cb });
+          } else {
+            switcher4--;
+          }
+        });
+
+        $('.data-fusion5').switchButton({
+            checked: false,
+            show_labels: false
+        }).change(function(){
+          if (switcher5 == 0) {
+            cb = $(this).prop("checked");
+            parent_li = $(this).parent(".flip-switch");
+            content = parent_li.next("span").text();
+
+            if(cb){
+              render_fusion5();
+            }
+            else {
+              unrender_fusion5();
+            }
+
+            switcher5 = $(".data-fusion5").length - 1;
+
+            $('.data-fusion5').switchButton({ checked: cb });
+          } else {
+            switcher5--;
+          }
+        });
+
+        $('.data-fusion6').switchButton({
+            checked: false,
+            show_labels: false
+        }).change(function(){
+          if (switcher6 == 0) {
+            cb = $(this).prop("checked");
+            parent_li = $(this).parent(".flip-switch");
+            content = parent_li.next("span").text();
+
+            if(cb){
+              render_fusion6();
+            }
+            else {
+              unrender_fusion6();
+            }
+
+            switcher6 = $(".data-fusion6").length - 1;
+
+            $('.data-fusion6').switchButton({ checked: cb });
+          } else {
+            switcher6--;
+          }
+        });
+
+        $('#search-location-input').on('focus', function (e) {
+          $(this).one('mouseup', function () {
+            $(this).select();
+            return false;
+          }).select();
+        });
+
+        $('#search-location-input').on('keyup', function (e) {
+          $('#search-location-input-2').val($(this).val());
+        });
+
+        $('#search-location-input-2').on('focus', function (e) {
+          $(this).one('mouseup', function () {
+            $(this).select();
+            return false;
+          }).select();
+        });
+
+        $('#search-location-input-2').on('keyup', function (e) {
+          $('#search-location-input').val($(this).val());
+        });
+
+        $("#create-a-report").click(function(){
+          create_a_report();          
+        });
+
+        $("body").on("submit", "#form-report", function(e){
+          if (e) {
+              e.preventDefault();
+          }
+
+          $("#submit-form-report").attr("disabled", "disabled");
+          $("#submit-form-report").val("Submitting...");
+
+          var formData = new FormData();
+          if(window.current_tags_string){
+            var target = "/create/report?expand=owner,edited_by,closed_by&tags=" + window.current_tags_string;
+          }
+          else {
+            var target = "/create/report?expand=owner,edited_by,closed_by";
+          }
+
+          var idx = $(this).attr("data-index");
+          
+
+          _.each($('#form-report').serializeArray(), function(input) {
+              formData.append(input.name, input.value);
+          });
+
+          var coords = window.current_marker.getPosition();
+
+          var lat = coords.lat();
+          var lng = coords.lng();
+
+          formData.append('lat', lat);
+          formData.append('lng', lng);
+
+          var files = document.getElementById("img-upload").files[0];
+          if (files) {
+              formData.append("file", files);
+              formData.append("file_type", files['type']);
+          } else {
+              formData.append("file", "");
+          }
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", target, true);
+          xhr.send(formData);
+          xhr.onload = function(response) {
+            console.log(response);
+            $("#submit-form-report").removeAttr("disabled");
+            close_all_info_windows();
+            if(xhr.status == 200){
+              console.log(xhr.responseText);
+              content = $.parseJSON(xhr.responseText);
+              if(idx){
+                
+              } else {
+                add_report(content.content);
+              }
+            }
+            else {
+              alert("Please log in and try again.");
+            }
+          }
+
+          xhr.onerror = function(response) {
+            console.log(response);
+            close_all_info_windows();
+            alert("An error occurred. Please try again.");
+          }
+
+        });
+
+        $("body").on("submit", "#submit-comment-form", function(e){
+          if (e) {
+              e.preventDefault();
+          }
+
+          $("#comment_form_submit").attr("disabled", "disabled");
+
+
+          var formData = new FormData();
+          var target = "/api/v1/ebayanihan/comments";
+
+          formData.append("report", $("#comment_form_report_id").val());
+
+          $(".cls_comment_form_content").each(function() {
+            if($(this).val()){
+                formData.append("content", $(this).val());
+            }
+          });
+
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", target, true);
+          xhr.send(formData);
+          xhr.onload = function(response) {
+            console.log("RESPONSE");
+            response = $.parseJSON(this.responseText);
+            $("#comment_form_submit").removeAttr("disabled");
+            $("#comment_form_content").val("");
+
+            var owner = response.content.owner.name ? response.content.owner.name: "";
+            var content = change_http_to_https(response.content.content);
+
+            var comment_item = $("#single-comment-template").html();
+            comment_item = replaceAll("%%owner%%", owner, comment_item);
+            comment_item = replaceAll("%%timestamp%%", "just now", comment_item);
+            comment_item = replaceAll("%%content%%", content, comment_item);
+            if(response.content.owner.official){
+              comment_item = replaceAll("%%official%%", "text-primary", comment_item);
+              comment_item = replaceAll("%%official-verified%%", '<img src="/img/ico-official.svg" class="official-user" title="Verified" alt="Verified">', comment_item);
+            }
+            else {
+              comment_item = replaceAll("%%official-verified%%", '', comment_item);
+              comment_item = replaceAll("%%official%%", "", comment_item);
+            }
+
+            $(".response-list").append(comment_item);
+          };
+
+          xhr.onerror = function(response) {
+            console.log(response);
+            alert("An error occurred. Please try again.");
+            $("#comment_form_submit").removeAttr("disabled");
+
+          };
+
+        });
+
+        
+
+        $("body").on("submit", "#submit-comment-form-2", function(e){
+          if (e) {
+              e.preventDefault();
+          }
+
+          $("#comment_form_submit_2").attr("disabled", "disabled");
+
+
+          var formData = new FormData();
+          var target = "/api/v2/comments";
+
+          _.each($('#submit-comment-form-2').serializeArray(), function(input) {
+              formData.append(input.name, input.value);
+          });
+
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", target, true);
+          xhr.send(formData);
+          xhr.onload = function(response) {
+            console.log("RESPONSE");
+            console.log(this.responseText);
+            response = $.parseJSON(this.responseText);
+            console.log(response);
+            $("#comment_form_submit_2").removeAttr("disabled");
+            $("#comment_form_content_2").val("");
+
+            var owner = response.content.owner.name;
+            var content = change_http_to_https(response.content.content);
+
+            var comment_item = $("#single-comment-template").html();
+            comment_item = replaceAll("%%owner%%", owner, comment_item);
+            comment_item = replaceAll("%%timestamp%%", "just now", comment_item);
+            comment_item = replaceAll("%%content%%", content, comment_item);
+            if(response.content.owner.official){
+              comment_item = replaceAll("%%official%%", "text-primary", comment_item);
+              comment_item = replaceAll("%%official-verified%%", '<img src="/img/ico-official.svg" class="official-user" title="Verified" alt="Verified">', comment_item);
+            }
+            else {
+              comment_item = replaceAll("%%official%%", "", comment_item);
+              comment_item = replaceAll("%%official-verified%%", '', comment_item);
+            }
+
+            $(".response-list").append(comment_item);
+          }
+
+          xhr.onerror = function(response) {
+            console.log(response);
+            alert("An error occurred. Please try again.");
+            $("#comment_form_submit").removeAttr("disabled");
+
+          }
+
+        });
+
+        $(".report-list-options").on('change', function (e) {
+            var optionSelected = $("option:selected", this);
+            var valueSelected = this.value;
+            window.current_report_type = this.value;
+            fetch_reports();
+            $(".report-list-options").val(this.value);
+        });
+
+        $(".report-list-sort-options").on('change', function (e) {
+            var optionSelected = $("option:selected", this);
+            var valueSelected = this.value;
+            window.current_report_sort = this.value;
+            fetch_reports();
+            $(".report-list-sort-options").val(this.value);
+        });
+
+        $(".report-list-verified-options").on('change', function (e) {
+            var optionSelected = $("option:selected", this);
+            var valueSelected = this.value;
+            window.current_report_verified = this.value;
+            fetch_reports();
+            $(".report-list-verified-options").val(this.value);
+        });
+
+        $("body").on("click", ".report-options input[name='info_type']", function(e) {
+          console.log($(this).val());
+          if ($(this).val() == "") {
+            $(".others-item").removeClass("hide");
+          } else {
+            $(".others-item").addClass("hide");
+          }
+        });
+      });
+    </script>
+
+    <script type="text/x-template" id="create-a-report-form">
+      <div>
+        <div>
+          <div>
+            %%top_warning%%
+            <div class="modal-body">
+              <h2><img src="/img/icon-report-gray.png" alt=""> What’s happening in your area?</h2>
+              <form id="form-report" action="/create/report" onLoad="alert('t')">
+                <input type="hidden" name="idToken" id="jwtToken" value="%%token%%" />
+                <textarea cols="2" name="content" rows="2" id="write-your-report-here" required="required" placeholder="Write your report here..."></textarea>
+                
+                <div class="icons-wrap">
+                  <div class="image-upload">
+                      <input type="file" id="img-upload">
+                  </div>
+                </div>
+
+                <div class="report-options">
+                  <ul>
+
+                    <li>
+                      <img src="/img/marker-info-alert.png" alt="">
+                      <p>
+                        <label for="info-alert">Info</label>
+                        <input type="radio" checked="checked" value="INFO" id="info-alert" name="info_type">
+                      </p>
+                    </li>
+
+                    <li>
+                      <img src="/img/marker-rescue.png" alt="">
+                      <p>
+                        <label for="rescue-alert">Rescue</label>
+                        <input type="radio" value="RESCUE" id="rescue-alert" name="info_type">
+                      </p>
+                    </li>
+
+                    <li>
+                      <img src="/img/marker-flood.png" alt="">
+                      <p>
+                        <label for="flood-alert">Flood</label>
+                        <input type="radio" value="FLOOD" id="flood-alert" name="info_type">
+                      </p>
+                    </li>
+
+                    <li>
+                      <p>
+                        <label for="flood-alert">Others</label>
+                        <input type="radio" value="" id="others-alert" name="info_type">
+                      </p>
+                    </li>
+
+                  </ul>
+                  <div class="clear-both"></div>
+                  <div class="others-item hide">
+                    <ul>
+                      <li>
+                        <img src="/img/bridge.png" alt="">
+                        <p>
+                          <label for="bridge-alert" class="pl-2">Bridge</label>
+                          <input type="radio" value="BRIDGE" id="bridge-alert" checked="checked" name="info_type_other">
+                        </p>
+                      </li>
+                      <li>
+                        <img src="/img/earthquake.png" alt="">
+                        <p>
+                          <label for="earthquake-alert" class="pl-2">Earthquake</label>
+                          <input type="radio" value="EARTHQUAKE" id="earthquake-alert" name="info_type_other">
+                        </p>
+                      </li>
+                      <li>
+                        <img src="/img/esite.png" alt="">
+                        <p>
+                          <label for="earthquake-evacuation-site-alert" class="pl-2">Earthquake Evacuation Site</label>
+                          <input type="radio" value="EARTHQUAKE-EVACUATION-SITE" id="earthquake-evacuation-site-alert" name="info_type_other">
+                        </p>
+                      </li>
+                      <li>
+                        <img src="/img/fire.png" alt="">
+                        <p>
+                          <label for="fire-alert" class="pl-2">Fire</label>
+                          <input type="radio" value="FIRE" id="fire-alert" name="info_type_other">
+                        </p>
+                      </li>
+                      <li>
+                        <img src="/img/landslide.png" alt="">
+                        <p>
+                          <label for="landslide-alert" class="pl-2">Landslide</label>
+                          <input type="radio" value="LANDSLIDE" id="landslide-alert" name="info_type_other">
+                        </p>
+                      </li>
+                      <li>
+                        <img src="/img/rain.png" alt="">
+                        <p>
+                          <label for="rain-alert" class="pl-2">Rain</label>
+                          <input type="radio" value="RAIN" id="rain-alert" name="info_type_other">
+                        </p>
+                      </li>
+                      <li>
+                        <img src="/img/relief.png" alt="">
+                        <p>
+                          <label for="relief-alert" class="pl-2">Relief</label>
+                          <input type="radio" value="RELIEF" id="relief-alert" name="info_type_other">
+                        </p>
+                      </li>
+                      <li>
+                        <img src="/img/storm-surge.png" alt="">
+                        <p>
+                          <label for="storm-surge-alert" class="pl-2">Storm Surge</label>
+                          <input type="radio" value="STORM-SURGE" id="storm-surge-alert" name="info_type_other">
+                        </p>
+                      </li>
+                      <li>
+                        <img src="/img/volcanic-eruption.png" alt="">
+                        <p>
+                          <label for="volcanic-eruption-alert" class="pl-2">Volcanic Eruption</label>
+                          <input type="radio" value="VOLCANIC-ERUPTION" id="volcanic-eruption-alert" name="info_type_other">
+                        </p>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="report-location">
+                  <span id="current_geocoded_location"></span>
+                  <input type="hidden" name="location" id="current_geocoded_location_input" />
+                  <input type="hidden" name="location2" id="current_geocoded_location2_input" />
+                </div>
+
+                <div class="clear"></div>
+                <em>Drag the pin or retype your location for better accuracy.</em>
+                <div class="modal-footer">
+                <div class="btn-report" style="margin-top:-15px;"><input id="submit-form-report" type="submit" value="Report"></div>
+                <div class="btn-close" data-dismiss="modal" onclick="close_all_info_windows()">Cancel</div>
+                </div>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </script>
+
+    
+
+    <script type="text/x-template" id="specific-report">
+      <div id="modal-report-selected">
+        <div>
+          <div>
+            <div class="modal-header pull-right" style="height:30px;">
+              <button onclick="close_all_info_windows()" type="button" class="close"><span aria-hidden="true" style="position: absolute; z-index: 100;">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <span class="report-type"><span class="report-%%icon%%"></span></span>
+                <em class="timestamp">%%timestamp%%</em>
+                <em class="reply-count"> <sup>.</sup> %%replies%%</em>
+              <div class="report-list-top">
+                <div class="side">
+                  <div class="report-marker">
+                    <img src="/img/marker-%%type_lower%%.png" alt="">
+                  </div>
+                </div>
+                <h5 class="report-title">%%type%%</h5>
+                <!--<div class="up-vote" onclick="upvote(%%index%%)">
+                  <span><b>Prioritize this</b></span>
+                  <span><button class="btn-up">&nbsp;</button></span>
+                  <span class="up-count" id="up-count-%%index%%">%%vote_ups%%</span>
+                </div>-->
+                <ul class="share-buttons">
+                  <li><a href="https://www.facebook.com/sharer/sharer.php?u=https://ResQme.com/reports/%%id%%" target="_blank"><img src="/img/facebook-icon-colored.png" alt=""></a></li>
+                  <li><a href="http://twitter.com/share?text=%%content_share%%&url=https://ResQme.com/reports/%%id%%" target="_blank"><img src="/img/twitter-icon-colored.png" alt=""></a></li>
+                </ul>
+              </div>
+              <div class="clear"></div>
+              <div class="report-content">
+                <div class="side">
+                  <span id="verify_info_window" class="verified %%not_verified%%"><img src="/img/icon-tick.png" title="%%verifier_text%%" alt="Verified"></span>
+                </div>
+                <p>%%content%%</p>
+
+                <div class="report-photo-thumb fancybox">%%photo%%</div>
+
+                <div class="clear"></div>
+                <div class="reporter-name %%noowner%%"><i class="fa fa-user"></i>
+                    <span>%%owner%%</span>%%official%%
+                </div>
+                <div class="report-location icon-map-marker-gray no-padding-top %%nolocation%%">
+                  <span>%%location%%</span>
+                </div>
+                <div class="clear"></div>
+                
+                <div class="user-details hide" style="margin-left: 28px;"></div>
+              </div>
+              <a href="#" class="view-response no-border hide">View official responses</a>
+
+              <div class="report-reply">
+                <form id="submit-comment-form">
+                  <input type="hidden" id="comment_form_report_id" name="report" value="%%id%%" />
+                  <input type="text" class="cls_comment_form_content" id="comment_form_content" required="required" name="content" placeholder="Reply to this report..."/>
+                  <input type="submit" id="comment_form_submit" value="Post" class="btn-default btn-sm pull-right"/>
+                </form>
+              </div>
+
+              <a href="#" class="view-response no-border rappler-paragraph hide">View %%replies%%</a>
+
+              <ul class="response-list">%%comments%%</ul>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </script>
+
+    <script type="text/x-template" id="report-item-template-2">
+      <li class="%%gray%%">
+        <a href="/mobile/edge-alert/%%id%%">
+          <span class="report-source"><img src="/img2/icon-twitter.png" alt=""></span><em class="timestamp">%%timestamp%%</em><span class="pull-right prioritize"><button class="btn-up"><span class="up-count">%%upvote_count%%</span></button></span>
+          <div>
+            <span class="report-marker rescue">%%marker_image%%</span>
+            <p class="word-wrap">%%content%%</p>
+            %%photo%%
+          </div>
+        </a>
+      </li>
+    </script>
+
+    <!-- Template for the list of reports in the side bar -->
+    <script type="text/x-template" id="report-item-template">
+      <li class="report_item %%gray%%" id="specific_report_item_%%index%%">
+          <div class="report-list-top">
+            <span class="report-type"><span class="report-%%icon%%"></span></span>
+            <em class="timestamp">%%timestamp%%</em>&nbsp;&nbsp;
+            <a class="share-in-report" href="https://www.facebook.com/sharer/sharer.php?u=https://ResQme.rappler.com/reports/%%id%%" target="_blank"><img src="/img/facebook-icon-colored.png" alt=""></a>
+            <a class="share-in-report" href="http://twitter.com/share?text=%%content_share%%&url=https://ResQme.rappler.com/reports/%%id%%" target="_blank"><img src="/img/twitter-icon-colored.png" alt=""></a>
+            <em class="reply-count %%noreply%%"> <sup>.</sup> %%replies%%</em>
+
+            
+
+            <div class="up-vote" onclick="upvote(%%index%%)">
+              <span><b>Prioritize this</b></span>
+              <span><button class="btn-up">&nbsp;</button></span>
+              <span class="up-count" id="up-count2-%%index%%">%%upvote_count%%</span>
+            </div>
+
+            <div class="clear"></div>
+
+          </div>
+          <div class="report-content" onclick="specific_report(%%index%%)">
+            <div class="side">
+              <div class="report-marker">
+                %%marker_image%%
+              </div>
+              <span class="verified %%not_verified%%"><img src="/img/icon-tick.png" title="%%verifier_text%%" alt="Verified"></span>
+            </div>
+            <p>%%content%%</p>
+            %%photo%%
+          </div>
+
+          
+        </li>
+    </script>
+
+
+    <script type="text/x-template" id="dataset-menu-template">
+      <li class="cb-container cb-container-t %%id%%" data-id="%%id%%">
+
+          <div class="flip-switch">
+            <input type="checkbox" name="flip-switch-%%id%%" class="normal dynamic-switch-%%id%% firstset" id="%%id%%" value="%%id%%">
+          </div>
+          <span class="switch-label"><a href="#" class="kind">%%title%%</a></span>
+
+      </li>
+    </script>
+
+    <script type="text/x-template" id="single-comment-template">
+      <li>
+        <b class="respondent %%official%%">%%owner%%%%official-verified%%</b>
+        <em class="timestamp"><sup>.</sup> %%timestamp%%</em>
+        <p>%%content%%</p>
+      </li>
+    </script>
+
+  <!-- Add fancyBox main JS file -->
+  <script type="text/javascript" src="js/jquery.fancybox.js"></script>
+
+  <!-- Custom scrollbar plugin -->
+  <!-- <script src="/js/jquery.mCustomScrollbar.concat.min.js"></script> -->
+
+  <script type="text/javascript">
+
+     var _gaq = _gaq || [];
+     _gaq.push(['_setAccount', 'UA-26553497-1']);
+     _gaq.push(['_setDomainName', 'resqme.com']);
+     _gaq.push(['_trackPageview']);
+
+     (function() {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+
+    $(".gm-style-iw").css( "width", "100% !important" );
+  </script>
+
+</body>
+</html>

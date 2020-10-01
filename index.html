@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en" debug="true"><div id="FirebugChannel" style="display: none;">FB_contextMenuClick,/html/body/div/div[4]/div[2]/div[2]/div/div[2]</div><script src="https://pagead2.googlesyndication.com/pagead/js/rum.js"></script><script src="https://pagead2.googlesyndication.com/pagead/osd.js"></script><script src="https://cdn.ampproject.org/rtv/011809142227020/amp4ads-host-v0.js"></script><script src="https://securepubads.g.doubleclick.net/gpt/pubads_impl_rendering_257.js"></script><script src="chrome-extension://ehemiojjcpldeipjhjkepfdaohajpbdo/firebug-lite.js" id="FirebugLite" firebugignore="true" extension="Chrome" extension-id="ehemiojjcpldeipjhjkepfdaohajpbdo"></script><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@agos">
+    <meta name="twitter:image" content="https://agos.rappler.com/img/fb-agos.png?v=master27032018.412517906872707061">
+    <meta property="twitter:title" content="Agos Alert Map - Technology and Community Action to achieve Zero Casualty">
+
+    <meta property="og:image" content="https://agos.rappler.com/img/fb-agos.png?v=master27032018.412517906872707061">
+    <meta property="og:url" content="https://agos.rappler.com/respond">
+    <meta property="og:site_name" content="Agos-eBayanihan">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="Agos powered by eBayanihan uses mobile and web technologies and social media to help communities deal with natural hazards, disasters and climate change">
+
+    <meta property="twitter:description" content="Agos powered by eBayanihan uses mobile and web technologies and social media to help communities deal with natural hazards, disasters and climate change">
+
+    <meta name="description" content="Agos powered by eBayanihan uses mobile and web technologies and social media to help communities deal with natural hazards, disasters and climate change">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Agos</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css?v=master27032018.412517906872707061" rel="stylesheet">
+    <link href="css/style-portal.css?v=master27032018.412517906872707061" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/sb-admin.css?v=master27032018.412517906872707061" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="css/font-awesome.min.css?v=master27032018.412517906872707061" rel="stylesheet">
+    <link href="css/simple-sidebar.css" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- GIGYA -->
+    <!-- script type="text/javascript" src="https://cdns.gigya.com/js/socialize.js?apiKey=3_ao3WNnqtFDhSjgAe1TC-0ykqEbogOlYXE1kYr0LoFxTDRzrwrGJkZpdnR_XEn3D5">
+        { siteName: "rappler.com", enabledProviders: "facebook,twitter,google,linkedin", connectWithoutLoginBehavior: "alwaysLogin", me_server: "https://me.rappler.com" }
+    </script -->
+
+    <!-- FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase.js"></script>
+    <script>
+        firebase.initializeApp({
+            apiKey: "AIzaSyDgYVf8xEExWwwjGMKSs4dg7BBeRD9a5KY",
+            authDomain: "resqme-b59d5.firebaseapp.com",
+            databaseURL: "https://resqme-b59d5.firebaseio.com",
+            projectId: "resqme-b59d5",
+            storageBucket: "resqme-b59d5.appspot.com",
+            messagingSenderId: "685913446219"
+        });
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                console.log('user logged in');
+                console.log(user);
+                $('#login_user_name').text(user.displayName);
+                $('#login-pop-up').html(`<span style="font-size:12px" class="clickover-txt"><a href="" onclick="signOut()">Logout</a></span>`);
+            } else {
+                console.log('user not logged in');
+
+                $.ajax({
+                      url: 'https://i.rappler.com/dev/token/custom',
+                      method: "GET",
+                      crossDomain: true,
+                      xhrFields: {
+                          withCredentials: true
+                      }
+                    })
+                    .done(function (data) {
+                        if (data.token) {
+                            firebase.auth().signInWithCustomToken(data.token)
+                                .catch(function (error) {
+                                    // console.log(error);
+                                    // TODO : modify ui to show they are logged in
+                                });
+                               // $('#login-pop-up').html(`<span style="font-size:12px" class="clickover-txt"><a href="" onclick="signOut()">Logout</a></span>`);
+                        }
+                    })                
+            }
+        });
+    </script>
+    <script src="/js/me4.js"></script>
+    
+
+    
+<link rel="prefetch" href="https://tpc.googlesyndication.com/safeframe/1-0-29/html/container.html"><script type="text/javascript" charset="utf-8" async="" src="https://platform.twitter.com/js/timeline.f2e3d1573ec0a0169368802d4d67b150.js"></script><script type="text/javascript" charset="UTF-8" src="https://maps-api-ssl.google.com/maps-api-v3/api/js/34/10/intl/en_au/common.js"></script><script type="text/javascript" charset="UTF-8" src="https://maps-api-ssl.google.com/maps-api-v3/api/js/34/10/intl/en_au/util.js"></script><script type="text/javascript" charset="UTF-8" src="https://maps-api-ssl.google.com/maps-api-v3/api/js/34/10/intl/en_au/stats.js"></script></head><script src="chrome-extension://ehemiojjcpldeipjhjkepfdaohajpbdo/googleChrome.js"></script>
+
+<body onload="getNews();" style="">
+
+    <div id="wrapper">
+        <!-- Navigation -->
+        <!-- Login Modal -->
+<style>
+  .facebook.bg {
+    background-color: #3b5998;
+    color: #fff;
+  }
+  
+  button.block {
+    width: 100%;
+    font-size: 13px;
+  }
+  
+  .twitter.bg {
+    background-color: #55acee;
+    color: #fff;
+  }
+  
+  button {
+    height: 36.67px;
+    padding: 4px 16px 4px 16px;
+  
+  }
+</style>
+
+
+<div>
+    <div class="menu-trigger nav-full">
+        <header class="navbar navbar-rappler-top visible-lg" role="banner">
+            
+            <div class="mdd-wrapper">
+                <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                    
+                    <ul class="nav navbar-nav navbar-right sm-removed">
+                        <li>
+                            <a href="javascript:void(0)" id="login" class="popover-btn" data-original-title="" title="">
+                                <i id="login_user_icon" class="fa fa-user margin right"> </i>
+                                <span id="login_user_name">Login</span>
+                                <!-- 
+                                <span>Log In</span>  -->
+                            </a>
+
+                            
+                                        <!-- Login -->
+                                       
+                                        <div id="login-dropdown" class="popover bottom" style="width: 225px;">
+                                            <div class="arrow"></div>
+                                            <div class="popover-content" style="width: 225px;">
+                                                <div style="line-height:1;">
+                                                  <div id="login-pop-up">
+                                                      <span style="font-size:13px; font-family: Roboto, Helvetica, sans-serif;" class="clickover-txt">Login to Rappler using your<br> social account:</span>
+
+                                                      <div id="social-login">
+                                                         <button class="facebook bg block text-left" style="margin-bottom: 8px; margin-top: 8px;" onclick="javascript:fbSignIn()">
+                                                             <i class="fa fa-facebook-square white" aria-hidden="true" style="padding-right: 4px;"></i> Login with Facebook
+                                                         </button>
+                                                         <button class="twitter bg block text-left" style="margin-bottom: 8px;" onclick="javascript:twitterSignIn()">
+                                                             <i class="fa fa-twitter white" aria-hidden="true" style="padding-right: 4px;"></i> Login with Twitter
+                                                         </button>
+                                                         <button class="bg block text-left" style="margin-bottom: 8px; border: 1px solid #eee;" onclick="javascript:googleSignIn()">
+                                                             <img src="https://assets.rappler.com/44B63D44C5B9471D8162729F56BAB766/img/84C6CF9CA34C4631BD2723B89AF3E45F/google-icon.png" style="padding-right: 0px; width: 25px; margin-left: -4px;" class="nolazy"> Login with Google
+                                                         </button>                             
+                                                      </div>
+                                                  </div>
+                                                  <label class="clickover-txt caption no-margin" style="line-height: 1.25; margin-top: 8px; font-weight: 400 !important; font-size: 12px; margin-bottom: 0px;">
+                                                    Already have a Rappler Account?
+                                                    <a href="https://www.rappler.com/#userlogin_modal" style="color: #e76229;"><b>Login</b></a>
+                                                    or <a href="https://www.rappler.com/#userreg_modal" style="color: #e76229;"><b>Register</b></a> to create one.
+                                                  </label>
+                                                
+                                                </div>+
+                                            </div>
+                                        </div>
+                        </li>
+                    </ul>
+                </nav>
+                </div>
+        </header>
+        </div>
+
+        <div class="header-menu" style="z-index: 20030;">
+            <div class="menu-trigger Xheader nav-mini">
+                <header class="navbar navbar-rappler visible-lg" role="banner" style="background-color: rgb(71, 87, 100);">
+                    <div class="mdd-wrapper box-shadow-2">
+                        <div class="navbar-header">
+                            
+                        </div>
+                        
+                    </div>
+                </header>
+            </div>
+        </div>
+        <!-- Mobile Nav -->
+        <div class="header-menu-mobile" style="z-index: 20030;">
+            <div class="menu-trigger Xheader nav-mini">
+                <header class="navbar navbar-rappler-mobile" role="banner">
+                    <div class="mdd-wrapper box-shadow-2">
+                        <div class="navbar-header navbar-header-mobile">
+                            <div class="sidebar-toggler">
+                                <a href="javascript:void(0);" id="menu-toggle" title="Menu">☰</a>
+                            </div>
+                            
+                            <a id="login-mobile" class="pull-right" href="javascript:void(0);">
+                                <i id="login_user_icon" class="fa fa-user margin right"> </i>
+                                
+                                <span>Log In</span> 
+                            </a>
+
+                            
+                            <!-- Login -->
+
+                            <div id="login-dropdown-mobile" class="popover bottom popover-mobile popover-2">
+                                <div class="arrow popover-arrow-mobile"></div>
+                                <div class="popover-content">
+                                    <div style="line-height:1;">
+
+                                        <span style="font-size:12px" class="clickover-txt">Login to Rappler using your
+                                            <br> social account:</span>
+
+                                        <div id="social-login-mobile"></div>
+                                        <!-- <script type="text/javascript">
+                                            gigya.socialize.showLoginUI({
+                                                height: 50,
+                                                width: 180,
+                                                showTermsLink: false // remove 'Terms' link
+                                                    ,
+                                                hideGigyaLink: true // remove 'Gigya' link
+                                                    ,
+                                                buttonsStyle: 'standard' // Change the default buttons design to "Full Logos" design
+                                                    ,
+                                                showWhatsThis: false // Pop-up a hint describing the Login Plugin, when the user rolls over the Gigya link.
+                                                    ,
+                                                containerID: 'social-login-mobile' // The component will embed itself inside the loginDiv Div
+                                                    ,
+                                                cid: ''
+                                            });
+
+                                            gigya.socialize.addEventHandlers({
+                                                onLogin: function () {
+                                                    gigya.socialize.getUserInfo({
+                                                        callback: function (r) {
+                                                            $("#login_user_firstname_mobile").html(
+                                                                r.user.firstName);
+                                                            data = {};
+                                                            data["gigya_uid"] = r.UID;
+                                                            data["social_id"] = r.user.loginProviderUID;
+                                                            data["firstname"] = r.user.firstName;
+                                                            data["gender"] = r.user.gender;
+                                                            data["email"] = r.user.email;
+                                                            data["provider"] = r.user.loginProvider;
+                                                            data["image"] = r.user.photoURL;
+
+                                                            loginToSocial(data);
+                                                        }
+
+                                                    })
+                                                }
+                                            });
+                                        </script> -->
+
+                                        <span style="font-size:12px;line-height:1" class="clickover-txt">Already have a Rappler Account?
+                                            <br>
+                                            <a href="javascript:void(0)" data-toggle="modal" data-target="#loginModal" class="orange-link">Login</a>
+                                            <b>OR</b>
+                                            <a href="javascript:void(0)" data-toggle="modal" data-target="#registerModal" class="orange-link">Register </a> to create one.</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                        </div>
+                    </div>
+                </header>
+            </div>
+        </div>
+        </div>
+
+        
+        <script type="text/javascript">
+            window.onscroll = function () {
+                var scrollValue = $('body').scrollTop();
+                if (scrollValue >= 68) {
+                    $('.header-menu').addClass('header-menu-fixed');
+                    $('.thinglinkFiltered').css('display', 'none');
+                    $('.navbar-rappler').css('background-color', '#e76229');
+                } else {
+                    $('.header-menu').removeClass('header-menu-fixed');
+                    $('.thinglinkFiltered').css('display', 'block');
+                    $('.navbar-rappler').css('background-color', '#475764');
+                }
+            }
+        </script>
+        <script>
+            $(document).ready(function () {
+                $('#login').click(function () {
+                    $('#login-dropdown').fadeToggle('fast');
+                });
+                $('#page-wrapper').click(function () {
+                    $('#login-dropdown').fadeOut('fast');
+                });
+            })
+
+            $(document).ready(function () {
+                $('#login-mobile').click(function () {
+                    $('#login-dropdown-mobile').fadeToggle('fast');
+                });
+                $('#page-wrapper').click(function () {
+                    $('#login-dropdown-mobile').fadeOut('fast');
+                });
+            })
+        </script>
+
+        <div id="page-wrapper">
+
+            
+
+<!-- Menu Toggle Script -->
+<script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+</script>
+<script type="text/javascript"> 
+    var data = {};
+
+    
+</script>
+
+            <div id="page-content-wrapper" class="container-fluid">
+
+                <!-- Page top row -->
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <div class="top-content">
+                            <a href="/" class="img-agos">
+                                <img class="img-responsive" src="/img/agos-ebayanihan-logo.png">
+                            </a>
+                            <div class="img-description">
+                                <p class="text-normal">
+                                    Agos is a collaborative platform that combines top-down government action with bottom up civic engagement to help communities
+                                    mitigate risks and deal with climate change and natural hazards. Using mobile and web
+                                    technologies and social media, it ensures the flow of critical and actionable information
+                                    to those who need it before, during, and after disasters and connects those who need
+                                    help directly with those who can truly help. Powered by the bayanihan spirit, it mobilizes
+                                    different sectors of society and transforms ordinary citizens into movers who are helping
+                                    build a more resilient nation.
+                                </p>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 mobile-res">
+                        <div class="">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <strong>IN PARTNERSHIP WITH:</strong>
+                                </h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="box">
+                                    <div class="panel panel-default">
+                                        <img class="img-responsive" src="">
+                                    </div>
+                                </div>
+                                <div class="box">
+                                    <div class="panel panel-default">
+                                        <img class="img-responsive" src="">
+                                    </div>
+                                </div>
+                                <div class="box">
+                                    <div class="panel panel-default">
+                                        <img class="img-responsive" src="">
+                                    </div>
+                                </div>
+                                <div class="box">
+                                    <div class="panel panel-default">
+                                        <img class="img-responsive" src="">
+                                    </div>
+                                </div>
+                                <div class="box">
+                                    <div class="panel panel-default">
+                                        <img class="img-responsive" src="">
+                                    </div>
+                                </div>
+                                <div class="box">
+                                    <div class="panel panel-default">
+                                        <img class="img-responsive" src="">
+                                    </div>
+                                </div>
+                                <div class="box">
+                                    <div class="panel panel-default">
+                                        <img class="img-responsive" src="">
+                                    </div>
+                                </div>
+                                <div class="box">
+                                    <div class="panel panel-default">
+                                        <img class="img-responsive" src="">
+                                    </div>
+                                </div>
+                                <div class="box">
+                                    <div class="panel panel-default">
+                                        <img class="img-responsive" src="">
+                                    </div>
+                                </div>
+                                <div class="box">
+                                    <div class="panel panel-default">
+                                        <img class="img-responsive" src="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-bottom">
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /top header -->
+
+                <!-- main content -->
+                <div class="main-content">
+                    <div class="content-title">
+                        <div class="title-icon">
+                            <img src="/img/respond-logo.png" style="max-width:none;">
+                        </div>
+                        <div class="title-description">
+                            <h2>RESPOND</h2>
+                            <p>During times of crisis, information is as critical as food and shelter. Learn how to better respond
+                                to a disaster and know about the people who pud their lives on the line to save others. Help
+                                crowdsource and communicate critical information that could save lives.</p>
+                        </div>
+                    </div>
+                    <div class="progressbar clearfix">
+                        <input id="seekslider" type="range" min="0" max="100" value="50" style="background: linear-gradient(to right, rgb(247, 201, 63) 0%, rgb(232, 97, 41) 50%, rgb(212, 212, 212) 50%, rgb(212, 212, 212) 100%);">
+                        <div class="progress-name">
+                            <div class="col-md-4 col-sm-4 col-xs-4" id="prepare">
+                                <a href="prepare">
+                                    <h2>PREPARE</h2>
+                                </a>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-4" id="respond">
+                                <a href="respond">
+                                    <h2>RESPOND</h2>
+                                </a>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-4" id="recover">
+                                <a href="recover">
+                                    <h2>RECOVER</h2>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="report clearfix mobile-res">
+                        <div class="col-md-8 col-sm-12 col-xs-12 mobile-res" style="padding-right:0" id="map-left">
+                            <div style="width: 100%"><iframe width="100%" height="600" src="https://maps.google.com/maps?width=100%&amp;height=600&amp;hl=en&amp;q=VIT%20university%20vellore+(My%20Business%20Name)&amp;ie=UTF8&amp;t=&amp;z=14&amp;iwloc=B&amp;output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"><a href="https://www.maps.ie/create-google-map/">Google Maps iframe generator</a></iframe></div><br />
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12 mobile-res" style="padding-left:0" id="map-right">
+                            <div class="alertmap-box">
+                                <div style="height:75px;">
+                                    <img src="/img/alert.png" class="img-responsive" style="height:100%">
+                                </div>
+                                <h3 class="alertmap-title">AGOS ALERT MAP</h3>
+                                <p class="alert-p1">The Agos Alert Map lets you visualize alerts and reports on a map. Hazard areas and other
+                                    geodata can also be viewed as an overlay data layer.</p>
+                                <p class="alert-p2">Submit your own report or be informed of what is happening around you.</p>
+                                <div class="sidebar-title">
+                                    <a href="/map" class="btn alertmap-btn">VIEW ALERT MAP</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    
+                    
+                   <div class="adds clearfix">
+                        <div id='div-ad-1' style='height:90px; width:728px;'>
+                            <script>
+                            googletag.cmd.push(function() { googletag.display('div-ad-1'); });
+                            </script>
+                        </div>
+                    </div>-->
+                </div>
+                
+
+                
+
+
+                           
+
+                            
+
+                            <div class="adds clearfix">
+                                <div id="Rappler_Top" style="height:90px; width:728px;" data-google-query-id="CJKF9_Wr5d0CFRAfaAodWD4BJw">
+                                    <script>
+                                        googletag.cmd.push(function () {
+                                            googletag.display('Rappler_Top');
+                                        });
+                                    </script><div id="google_ads_iframe_/15125093/Rappler_Top_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/15125093/Rappler_Top_0" title="3rd party ad content" name="google_ads_iframe_/15125093/Rappler_Top_0" width="300" height="250" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" srcdoc="" style="border: 0px; vertical-align: bottom;" data-load-complete="true"></iframe></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12">
+                                <div class="adds clearfix">
+                                    <div id='div-ad-2' style='height:90px; width:728px;'>
+                                        <script>
+                                        googletag.cmd.push(function() { googletag.display('div-ad-2'); });
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <div class="feature-box2">
+                                <div class="box-header orange">Twitter Feed: @Agos</div>
+                                <div class="twitter-feed" style="height: 750px;padding: 25px 10px">
+                                    <iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" class="twitter-timeline twitter-timeline-rendered" style="position: static; visibility: visible; display: inline-block; width: 100%; padding: 0px; border: none; max-width: 100%; min-width: 180px; margin-top: 0px; margin-bottom: 0px; min-height: 200px; height: 7620.78px;" data-widget-id="profile:agos" title="Twitter Timeline"></iframe>
+                                    <script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mood-meter box-shadow-1 gray main-wrapper hidden-sm hidden-xs">
+                    <iframe src="//mm.rappler.com/moodnavigator/view?x=0&amp;cat_path=disasters&amp;duration=15+days+ago" class="hidden-phone mood-embed" seamless="seamless" frameborder="0" noresize="noresize" scrolling="no"></iframe>
+                </div>
+
+            </div>
+            
+
+        
+
+        
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+
+    <!-- Scroll to fixed -->
+    <script src="/js/scrolltofixed.js" type="text/javascript"></script>
+
+    <!-- Nice Scroll Files -->
+    <script src="/js/jquery.nicescroll.min.js" type="text/javascript"></script>
+
+    <!-- Custom Script  -->
+    <script src="/js/custom.js" type="text/javascript"></script>
+
+    <!-- Slider JavaScript -->
+    <script>
+        $('#seekslider').val(50);
+        var seekslider = document.getElementById("seekslider");
+        var sliderpath = 50;
+
+        seekslider.style.background = "-moz-linear-gradient(left,  #ed1e24 0%, #ed1e24 " + sliderpath + "%, #191919 " +
+            sliderpath + "%, #191919 100%)";
+        seekslider.style.background =
+            "-webkit-gradient(linear, left top, right top, color-stop(0%,#ed1e24), color-stop(" + sliderpath +
+            "%,#ed1e24), color-stop(" + sliderpath + "%,#191919), color-stop(100%,#191919))";
+        seekslider.style.background = "-webkit-linear-gradient(left,  #ed1e24 0%,#ed1e24 " + sliderpath + "%,#191919 " +
+            sliderpath + "%,#191919 100%)";
+        seekslider.style.background = "-o-linear-gradient(left,  #ed1e24 0%,#ed1e24 " + sliderpath + "%,#191919 " +
+            sliderpath + "%,#191919 100%)";
+        seekslider.style.background = "-ms-linear-gradient(left,  #ed1e24 0%,#ed1e24 " + sliderpath + "%,#191919 " +
+            sliderpath + "%,#191919 100%)";
+        seekslider.style.background = "linear-gradient(to right,  #f7c93f 0%,#e86129 " + sliderpath + "%,#d4d4d4 " +
+            sliderpath + "%,#d4d4d4 100%)";
+    </script>
+    <script type="text/javascript">
+        $('#seekslider').mouseup(function () {
+            var val = document.getElementById("seekslider").value;
+
+            if (val > 15 && val < 84) {
+                $('#seekslider').val(50);
+
+                var sliderpath = document.getElementById("seekslider").value;
+
+                seekslider.style.background = "-moz-linear-gradient(left,  #ed1e24 0%, #ed1e24 " + sliderpath +
+                    "%, #191919 " + sliderpath + "%, #191919 100%)";
+                seekslider.style.background =
+                    "-webkit-gradient(linear, left top, right top, color-stop(0%,#ed1e24), color-stop(" +
+                    sliderpath + "%,#ed1e24), color-stop(" + sliderpath +
+                    "%,#191919), color-stop(100%,#191919))";
+                seekslider.style.background = "-webkit-linear-gradient(left,  #ed1e24 0%,#ed1e24 " + sliderpath +
+                    "%,#191919 " + sliderpath + "%,#191919 100%)";
+                seekslider.style.background = "-o-linear-gradient(left,  #ed1e24 0%,#ed1e24 " + sliderpath +
+                    "%,#191919 " + sliderpath + "%,#191919 100%)";
+                seekslider.style.background = "-ms-linear-gradient(left,  #ed1e24 0%,#ed1e24 " + sliderpath +
+                    "%,#191919 " + sliderpath + "%,#191919 100%)";
+                seekslider.style.background = "linear-gradient(to right,  #f7c93f 0%,#e86129 " + sliderpath +
+                    "%,#d4d4d4 " + sliderpath + "%,#d4d4d4 100%)";
+            } else if (val < 16) {
+                window.location.href = "/prepare";
+            } else if (val > 83) {
+                window.location.href = "/recover";
+            }
+        });
+
+        $('#seekslider').on('input', function () {
+            var sliderpath = document.getElementById("seekslider").value;
+
+            seekslider.style.background = "-moz-linear-gradient(left,  #ed1e24 0%, #ed1e24 " + sliderpath +
+                "%, #191919 " + sliderpath + "%, #191919 100%)";
+            seekslider.style.background =
+                "-webkit-gradient(linear, left top, right top, color-stop(0%,#ed1e24), color-stop(" +
+                sliderpath + "%,#ed1e24), color-stop(" + sliderpath + "%,#191919), color-stop(100%,#191919))";
+            seekslider.style.background = "-webkit-linear-gradient(left,  #ed1e24 0%,#ed1e24 " + sliderpath +
+                "%,#191919 " + sliderpath + "%,#191919 100%)";
+            seekslider.style.background = "-o-linear-gradient(left,  #ed1e24 0%,#ed1e24 " + sliderpath +
+                "%,#191919 " + sliderpath + "%,#191919 100%)";
+            seekslider.style.background = "-ms-linear-gradient(left,  #ed1e24 0%,#ed1e24 " + sliderpath +
+                "%,#191919 " + sliderpath + "%,#191919 100%)";
+            seekslider.style.background = "linear-gradient(to right,  #f7c93f 0%,#e86129 " + sliderpath +
+                "%,#d4d4d4 " + sliderpath + "%,#d4d4d4 100%)";
+
+            if ($('#seekslider').val() < 16) {
+                $('#prepare a h2').css("color", "#e76229");
+                $('#recover a h2').css("color", "#000");
+            } else if ($('#seekslider').val() > 83) {
+                $('#recover a h2').css("color", "#e76229");
+                $('#prepare a h2').css("color", "#000");
+            } else {
+                $('#prepare a h2').css("color", "#000");
+                $('#recover a h2').css("color", "#000");
+            }
+        });
+    </script>
+
+    
+     <script type="text/javascript">
+        function onLoad() {
+            gigya.socialize.addEventHandlers({
+                context: {
+                    str: 'congrats on your'
+                },
+                onLogin: onLoginHandler,
+                onLogout: onLogoutHandler
+            });
+        }
+
+        function onLoginHandler(eventObj) {
+            var params = {
+                siteUID: "4",
+                timestamp: "1538400354.08",
+                cid: '',
+                signature: "NK/4emt9Jytccnzf6ecKflFtv5o="
+            };
+            gigya.socialize.notifyRegistration(params);
+            console.log(eventObj);
+        }
+    </script> 
+    <script>
+        function myMap() {
+            var mapCanvas = document.getElementById("map");
+            var mapOptions = {
+                center: new google.maps.LatLng(12.31, 121.1),
+                zoom: 6
+            }
+            var map = new google.maps.Map(mapCanvas, mapOptions);
+        }
+    </script>
+
+    <script src="https://maps-api-ssl.google.com/maps/api/js?callback=myMap"></script>
+
+    <script type="text/javascript">
+        function getNews() {
+            var data = {};
+
+            
+
+            
+
+            
+            
+
+            
+            
+        }
+    </script>
+
+
+
+<iframe scrolling="no" frameborder="0" allowtransparency="true" src="https://platform.twitter.com/widgets/widget_iframe.a11d275af20b525d994d187f4d6ccc58.html?origin=https%3A%2F%2Fagos.rappler.com&amp;settingsEndpoint=https%3A%2F%2Fsyndication.twitter.com%2Fsettings" title="Twitter settings iframe" style="display: none;"></iframe><iframe src="about:blank" frameborder="0" style="border: 0px; visibility: visible; z-index: 2147483647; position: fixed; width: 100%; left: 0px; bottom: 0px; height: 300px; display: none;" id="FirebugUI"></iframe><iframe id="google_osd_static_frame_8897789452688" name="google_osd_static_frame" style="display: none; width: 0px; height: 0px;"></iframe><iframe id="rufous-sandbox" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" style="position: absolute; visibility: hidden; display: none; width: 0px; height: 0px; padding: 0px; border: none;" title="Twitter analytics iframe"></iframe><div id="fbBoxModel" style="margin: 0px; padding: 0px; border: 0px; position: absolute; overflow: hidden; display: block; z-index: 2147483500; opacity: 0.8; top: 280px; left: -250px; height: 0px; width: 250px;"><div id="fbBoxMargin" style="margin: 0px; padding: 0px; border: 0px; position: absolute; overflow: hidden; display: block; z-index: 2147483500; background: rgb(237, 255, 100); height: 100%; width: 100%;"></div><div id="fbBoxBorder" style="margin: 0px; padding: 0px; border: 0px; position: absolute; overflow: hidden; display: block; z-index: 2147483500; background: rgb(102, 102, 102); top: 0px; left: 250px; height: 0px; width: 0px;"></div><div id="fbBoxPadding" style="margin: 0px; padding: 0px; border: 0px; position: absolute; overflow: hidden; display: block; z-index: 2147483500; background: slateblue; top: 0px; left: 250px; height: 0px; width: 0px;"></div><div id="fbBoxContent" style="margin: 0px; padding: 0px; border: 0px; position: absolute; overflow: hidden; display: block; z-index: 2147483500; background: skyblue; top: 0px; left: 250px; height: 0px; width: 0px;"></div></div></body></html>

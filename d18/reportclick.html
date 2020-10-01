@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<div class="modal-body">
+              <h2><img src="/img/icon-report-gray.png" alt=""> What’s happening in your area?</h2>
+              <form id="form-report" action="/create/report" onload="alert('t')">
+                <input type="hidden" name="idToken" id="jwtToken" value="eyJhbGciOiJSUzI1NiIsImtpZCI6IjA2OThjZmNlMTgzNWZjNDZmNWVhZWZjOGJmOTMwNjk0OGQ2OTFmMGIifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcmFwcGxlcnByb2QiLCJuYW1lIjoiTWl0YXJ0aCBKYWluIiwicGljdHVyZSI6Imh0dHBzOi8vZ3JhcGguZmFjZWJvb2suY29tLzE4MDUyNTE3Mjk1OTQ3MzAvcGljdHVyZSIsImF1ZCI6InJhcHBsZXJwcm9kIiwiYXV0aF90aW1lIjoxNTM4NTc3Mjc3LCJ1c2VyX2lkIjoiVjV0SHA2dVFsTFlzNVRzZEZPa0xjc3dUNmJIMiIsInN1YiI6IlY1dEhwNnVRbExZczVUc2RGT2tMY3N3VDZiSDIiLCJpYXQiOjE1Mzg1NzcyNzgsImV4cCI6MTUzODU4MDg3OCwiZW1haWwiOiJqYWluLm1pdGFydGhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImZhY2Vib29rLmNvbSI6WyIxODA1MjUxNzI5NTk0NzMwIl0sImVtYWlsIjpbImphaW4ubWl0YXJ0aEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJmYWNlYm9vay5jb20ifX0.AQA4dWielsqp-8x7tZqkx1leUsUjR2RcR_C7DXN6t6Vj2nbUm6H6t9oc7MAbTM9Im_iUblQXp0mxdOEMN7gKdGBWH7bH7mKYFjs2zuPxmhckhgG2EQ2R2HpGd4CM6fUq-B-yswN8y6vimUT82RYE5DNZx6cyNGK41AyS0x-J9x1QckPXw87CuIdhxBYCX9tagsikmSFr3rtFKRB9Rx1s9wzz8M-07Qc_KXRulQOvCqEUWwlZKdGKYoU_mx_o5uzzMNJY80GsAk1w2xJWNlFqdNnECiB42QD_iYfxjFkemAdHF_PW688jUD6Iobuet-4nmLtCWCnKPIEjoUpOwqJolw">
+                <textarea cols="2" name="content" rows="2" id="write-your-report-here" required="required" placeholder="Write your report here..."></textarea>
+                
+                <div class="icons-wrap">
+                  <div class="image-upload">
+                      <input type="file" id="img-upload">
+                  </div>
+                </div>
+
+                <div class="report-options">
+                  <ul>
+
+                    <li>
+                      <img src="/img/marker-info-alert.png" alt="">
+                      <p>
+                        <label for="info-alert">Info</label>
+                        <input type="radio" checked="checked" value="INFO" id="info-alert" name="info_type">
+                      </p>
+                    </li>
+
+                    <li>
+                      <img src="/img/marker-rescue.png" alt="">
+                      <p>
+                        <label for="rescue-alert">Rescue</label>
+                        <input type="radio" value="RESCUE" id="rescue-alert" name="info_type">
+                      </p>
+                    </li>
+
+                    <li>
+                      <img src="/img/marker-flood.png" alt="">
+                      <p>
+                        <label for="flood-alert">Flood</label>
+                        <input type="radio" value="FLOOD" id="flood-alert" name="info_type">
+                      </p>
+                    </li>
+
+                    <li>
+                      <p>
+                        <label for="flood-alert">Others</label>
+                        <input type="radio" value="" id="others-alert" name="info_type">
+                      </p>
+                    </li>
+
+                  </ul>
+                  <div class="clear-both"></div>
+                  <div class="others-item hide">
+                    <ul>
+                      <li>
+                        <img src="/img/bridge.png" alt="">
+                        <p>
+                          <label for="bridge-alert" class="pl-2">Bridge</label>
+                          <input type="radio" value="BRIDGE" id="bridge-alert" checked="checked" name="info_type_other">
+                        </p>
+                      </li>
+                      <li>
+                        <img src="/img/earthquake.png" alt="">
+                        <p>
+                          <label for="earthquake-alert" class="pl-2">Earthquake</label>
+                          <input type="radio" value="EARTHQUAKE" id="earthquake-alert" name="info_type_other">
+                        </p>
+                      </li>
+                      <li>
+                        <img src="/img/esite.png" alt="">
+                        <p>
+                          <label for="earthquake-evacuation-site-alert" class="pl-2">Earthquake Evacuation Site</label>
+                          <input type="radio" value="EARTHQUAKE-EVACUATION-SITE" id="earthquake-evacuation-site-alert" name="info_type_other">
+                        </p>
+                      </li>
+                      <li>
+                        <img src="/img/fire.png" alt="">
+                        <p>
+                          <label for="fire-alert" class="pl-2">Fire</label>
+                          <input type="radio" value="FIRE" id="fire-alert" name="info_type_other">
+                        </p>
+                      </li>
+                      <li>
+                        <img src="/img/landslide.png" alt="">
+                        <p>
+                          <label for="landslide-alert" class="pl-2">Landslide</label>
+                          <input type="radio" value="LANDSLIDE" id="landslide-alert" name="info_type_other">
+                        </p>
+                      </li>
+                      <li>
+                        <img src="/img/rain.png" alt="">
+                        <p>
+                          <label for="rain-alert" class="pl-2">Rain</label>
+                          <input type="radio" value="RAIN" id="rain-alert" name="info_type_other">
+                        </p>
+                      </li>
+                      <li>
+                        <img src="/img/relief.png" alt="">
+                        <p>
+                          <label for="relief-alert" class="pl-2">Relief</label>
+                          <input type="radio" value="RELIEF" id="relief-alert" name="info_type_other">
+                        </p>
+                      </li>
+                      <li>
+                        <img src="/img/storm-surge.png" alt="">
+                        <p>
+                          <label for="storm-surge-alert" class="pl-2">Storm Surge</label>
+                          <input type="radio" value="STORM-SURGE" id="storm-surge-alert" name="info_type_other">
+                        </p>
+                      </li>
+                      <li>
+                        <img src="/img/volcanic-eruption.png" alt="">
+                        <p>
+                          <label for="volcanic-eruption-alert" class="pl-2">Volcanic Eruption</label>
+                          <input type="radio" value="VOLCANIC-ERUPTION" id="volcanic-eruption-alert" name="info_type_other">
+                        </p>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="report-location">
+                  <span id="current_geocoded_location">way to B block mess, VIT University, Vellore, Tamil Nadu 632014, India</span>
+                  <input type="hidden" name="location" id="current_geocoded_location_input" value="way to B block mess, VIT University, Vellore, Tamil Nadu 632014, India">
+                  <input type="hidden" name="location2" id="current_geocoded_location2_input" value="way to B block mess, VIT University, Vellore, Tamil Nadu 632014, India">
+                </div>
+
+                <div class="clear"></div>
+                <em>Drag the pin or retype your location for better accuracy.</em>
+                <div class="modal-footer">
+                <div class="btn-report" style="margin-top:-15px;"><input id="submit-form-report" type="submit" value="Report"></div>
+                <div class="btn-close" data-dismiss="modal" onclick="close_all_info_windows()">Cancel</div>
+                </div>
+              </form>
+
+            </div>
+</html>
